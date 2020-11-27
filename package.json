@@ -10,11 +10,28 @@
     "electron": "^11.0.3",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
+    "uuid": "^8.3.1",
     "wait-on": "^5.2.0",
     "web-vitals": "^0.2.4"
   },
   "main": "main.js",
+  "author": {
+    "name": "Sebastian Vallin",
+    "url": "https://github.com/Sebbev"
+  },
+  "license": "MIT",
+  "keywords": [
+    "electron",
+    "react",
+    "chat",
+    "twitch",
+    "client",
+    "cross-platform",
+    "desktop",
+    "app"
+  ],
   "scripts": {
     "start": "concurrently \"set BROWSER=none && react-scripts start\" \"wait-on http://localhost:3000 && electron .\"",
     "start:react": "react-scripts start",
