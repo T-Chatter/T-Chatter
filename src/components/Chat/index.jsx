@@ -12,7 +12,9 @@ const Chat = () => {
       <Switch>
         {tabs.map((tab) => (
           <Route key={tab.id} path={`/chat/${tab.name}`} exact={true}>
-            <Channel />
+            <div className="chat-channel-container">
+              <Channel />
+            </div>
           </Route>
         ))}
         <Route path="/chat">

@@ -4,17 +4,22 @@ import { TabsContext } from "../../contexts/TabsContext";
 import "./style.css";
 
 const Navbar = () => {
-  document.addEventListener("wheel", function (e) {
-    if (
-      e.target.classList.contains("navbar-container") ||
-      e.target.classList.contains("navbar-link") ||
-      e.target.classList.contains("navbar-link-i")
-    ) {
-      const scrollContainer = document.getElementById("nav-main");
-      if (e.deltaY > 0) scrollContainer.scrollLeft += 10;
-      else scrollContainer.scrollLeft -= 10;
-    }
-  });
+  document.addEventListener(
+    "wheel",
+    function (e) {
+      if (
+        e.target.classList.contains("navbar-container") ||
+        e.target.classList.contains("navbar-link") ||
+        e.target.classList.contains("navbar-link-i")
+      ) {
+        e.preventDefault();
+        const scrollContainer = document.getElementById("nav-main");
+        if (e.deltaY > 0) scrollContainer.scrollLeft += 10;
+        else scrollContainer.scrollLeft -= 10;
+      }
+    },
+    { passive: false }
+  );
 
   return (
     <div className="navbar-container" id="nav-main">

@@ -1,21 +1,184 @@
-import React, { useContext } from "react";
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 import { Redirect } from "react-router";
+import tmi from "tmi.js";
 import { TabsContext } from "../../../contexts/TabsContext";
+import "./style.css";
+import parse from "html-react-parser";
 
 const Channel = () => {
-  const { removeTab } = useContext(TabsContext);
-  let channel = window.location.pathname.replace("/chat/", "");
+  const { removeTab, tabs } = useContext(TabsContext);
+  const [channel, setChannel] = useState(
+    window.location.pathname.replace("/chat/", "")
+  );
+  const tab = tabs.find((t) => t.name === channel);
+  let isPaused = useRef(false);
+  let isConnected = false;
+  let showDate = false;
+  const messageLimit = 200;
+
+  const client = tmi.client({
+    channels: [channel],
+    options: {
+      clientId: "8amc2k0y3ipgrnjb3yd09inhb16n3e",
+      debug: false,
+    },
+  });
+
+  client.on("connected", () => {
+    console.log("Connected");
+    isConnected = true;
+  });
+
+  client.on("message", (channel, userState, message, self) => {
+    if (!self) {
+      const container = document.getElementById("messages-container");
+      // Make sure the visible messages does not exceed the limit
+      if (container.childNodes.length >= messageLimit) {
+        const firstChild = container.firstChild;
+        if (firstChild !== null) firstChild.remove();
+      }
+      // Make sure the visible messages does not exceed the limit
+      if (tab?.messages.length >= messageLimit) {
+        tab.messages.shift();
+      }
+
+      const date = new Date();
+      const msg = `${
+        showDate ? date.getHours() + ":" + date.getMinutes() + " " : ""
+      }<span style="color: ${userState.color ?? "#1c82e7"}">${
+        userState.username
+      }</span>${userState["message-type"] === "action" ? " " : ": "}${message}`;
+
+      tab.messages.push(msg);
+
+      let msgEl = document.createElement("p");
+      msgEl.innerHTML = msg;
+      msgEl.classList.add("message");
+      if (userState["message-type"] === "action") {
+        msgEl.style.color = userState.color;
+      }
+
+      container.append(msgEl);
+      scrollToBottom();
+    }
+  });
+
+  const scrollToBottom = useCallback(
+    (ignorePause = false) => {
+      if (!isPaused.current || ignorePause) {
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+    },
+    [isPaused]
+  );
+
+  const unPause = useCallback(() => {
+    scrollToBottom(true);
+    isPaused.current = false;
+    const el = document.getElementById("paused");
+    if (el) {
+      isPaused.current = false;
+      el.style.display = "none";
+    }
+  }, [isPaused, scrollToBottom]);
+
+  const pause = useCallback(() => {
+    const el = document.getElementById("paused");
+    if (el) {
+      isPaused.current = true;
+      el.style.display = "block";
+    }
+  }, [isPaused]);
+
+  const handleScrollPause = useCallback(
+    (e) => {
+      if (
+        e.target.classList.contains("navbar-container") ||
+        e.target.classList.contains("navbar-link") ||
+        e.target.classList.contains("navbar-link-i")
+      ) {
+        return;
+      } else if (e.deltaY < 0) {
+        pause();
+      }
+    },
+    [pause]
+  );
+
+  const handleKeydownPause = useCallback(
+    (e) => {
+      if (e.key === "Alt" && !isPaused.current) {
+        e.preventDefault();
+        pause();
+      }
+    },
+    [isPaused, pause]
+  );
+
+  const handleKeyupPause = useCallback(
+    (e) => {
+      if (e.key === "Alt" && isPaused.current) {
+        e.preventDefault();
+        unPause();
+      }
+    },
+    [isPaused, unPause]
+  );
 
   const remove = () => {
     removeTab(channel);
-    channel = "";
+    setChannel("");
   };
 
-  if (channel === "") return <Redirect to="/" />;
+  useEffect(() => {
+    if (!isConnected && client.readyState() !== "CONNECTING") {
+      client.connect();
+      document.addEventListener("wheel", handleScrollPause);
+      document.addEventListener("keydown", handleKeydownPause);
+      document.addEventListener("keyup", handleKeyupPause);
+      scrollToBottom();
+    }
+    return () => {
+      if (isConnected) {
+        document.removeEventListener("wheel", handleScrollPause, true);
+        document.removeEventListener("keydown", handleKeydownPause, true);
+        document.removeEventListener("keyup", handleKeyupPause, true);
+        client.removeAllListeners();
+        client.disconnect();
+      }
+    };
+  }, [
+    isConnected,
+    client,
+    handleScrollPause,
+    handleKeydownPause,
+    handleKeyupPause,
+    scrollToBottom,
+  ]);
+
+  if (channel === "" || tab === null) return <Redirect to="/" />;
   return (
     <div>
       <h1>{channel}</h1>
       <button onClick={remove}>Remove channel</button>
+      <div id="messages-container">
+        {tab.messages.map((m, i) => {
+          return (
+            <p key={i} className="message">
+              {parse(m)}
+            </p>
+          );
+        })}
+      </div>
+      <button id="paused" className="paused-btn" onClick={unPause}>
+        Chat Paused
+      </button>
     </div>
   );
 };

@@ -14,6 +14,7 @@ const Home = () => {
       const tab = {
         id: uuidv4(),
         name: channel,
+        messages: [],
       };
       addTab(tab);
     }
