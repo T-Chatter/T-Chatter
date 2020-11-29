@@ -1,4 +1,5 @@
 .message {
+  font-size: 14px;
   padding-left: 10px;
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -9,6 +10,7 @@
   -webkit-hyphens: auto;
   hyphens: auto;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
 }
 
