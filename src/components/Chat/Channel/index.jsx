@@ -59,7 +59,9 @@ const Channel = () => {
         showDate ? date.getHours() + ":" + date.getMinutes() + " " : ""
       }<span style="color: ${
         userState.color ?? "#1c82e7"
-      }; font-weight: bold;">${userState.mod ? "[M]&nbsp;" : ""}
+      }; font-weight: bold;">${
+        userState.badges?.broadcaster ? "[B]&nbsp;" : ""
+      }${userState.mod ? "[M]&nbsp;" : ""}
       ${userState.subscriber ? "[S]&nbsp;" : ""}${userState.username}</span>${
         userState["message-type"] === "action"
           ? "&nbsp;"
