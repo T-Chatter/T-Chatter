@@ -8,7 +8,6 @@ const Chat = () => {
 
   return (
     <>
-      <h1>Chat 💬</h1>
       <Switch>
         {tabs.map((tab) => (
           <Route key={tab.id} path={`/chat/${tab.name}`} exact={true}>

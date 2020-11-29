@@ -165,8 +165,10 @@ const Channel = () => {
   if (channel === "" || tab === null) return <Redirect to="/" />;
   return (
     <div>
-      <h1>{channel}</h1>
-      <button onClick={remove}>Remove channel</button>
+      <h1 className="channel-title">{channel}</h1>
+      <button onClick={remove} className="channel-remove-btn">
+        Remove channel
+      </button>
       <div id="messages-container">
         {tab.messages.map((m, i) => {
           return (

@@ -37,6 +37,7 @@
   "scripts": {
     "start": "concurrently \"set BROWSER=none && react-scripts start\" \"wait-on http://localhost:3000 && electron .\"",
     "start:react": "react-scripts start",
+    "start:electron": "wait-on http://localhost:3000 && electron .",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
