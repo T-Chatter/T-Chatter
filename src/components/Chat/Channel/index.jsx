@@ -49,6 +49,12 @@ const Channel = () => {
       }
 
       const date = new Date();
+
+      let emotesObj = userState.emotes;
+      if (emotesObj) {
+        message = insertEmotes(message, emotesObj);
+      }
+
       const msg = `${
         showDate ? date.getHours() + ":" + date.getMinutes() + " " : ""
       }<span style="color: ${userState.color ?? "#1c82e7"}">${
@@ -68,6 +74,31 @@ const Channel = () => {
       scrollToBottom();
     }
   });
+
+  const insertEmotes = (message, emotesObject) => {
+    if (message === "" || !emotesObject) return;
+    const stringReplacements = [];
+    Object.entries(emotesObject).forEach(([id, positions]) => {
+      const position = positions[0];
+      const [start, end] = position.split("-");
+      const stringToReplace = message.substring(
+        parseInt(start, 10),
+        parseInt(end, 10) + 1
+      );
+
+      stringReplacements.push({
+        stringToReplace: stringToReplace,
+        replacement: `<img src="https://static-cdn.jtvnw.net/emoticons/v1/${id}/1.0" alt="${stringToReplace}" style="margin: 0 0.25rem">`,
+      });
+    });
+    const messageHTML = stringReplacements.reduce(
+      (acc, { stringToReplace, replacement }) => {
+        return acc.split(stringToReplace).join(replacement);
+      },
+      message
+    );
+    return messageHTML;
+  };
 
   const scrollToBottom = useCallback(
     (ignorePause = false) => {

@@ -8,6 +8,8 @@
   -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
+  display: flex;
+  align-items: center;
 }
 
 .paused-btn {
