@@ -6,18 +6,22 @@ const {
   nativeImage,
   screen,
   Menu,
+  MenuItem,
 } = require("electron");
 const path = require("path");
 
 let tray, window;
 
 const platform = process.platform;
+const icon = path.join(__dirname, "assets/tchatter-258x258.png");
+const nIcon = nativeImage.createFromPath(icon);
 
 if (platform === "darwin") app.dock.hide();
 
 function createWindow() {
   // Create the browser window.
   window = new BrowserWindow({
+    icon: nIcon,
     width: 800,
     height: 600,
     show: true,
@@ -64,11 +68,20 @@ app.on("window-all-closed", function () {
 });
 
 const createTray = () => {
-  const icon = path.join(__dirname, "assets/icon.png");
-  const nImage = nativeImage.createFromPath(icon);
-
-  tray = new Tray(nImage);
+  tray = new Tray(nIcon);
+  tray.setToolTip("T-Chatter");
   tray.on("click", (event) => toggleWindow());
+  tray.on("right-click", (event) => {
+    const template = [
+      new MenuItem({
+        label: "Exit",
+        toolTip: "Exit the application",
+        click: () => app.quit(),
+      }),
+    ];
+    const menu = Menu.buildFromTemplate(template);
+    tray.popUpContextMenu(menu);
+  });
 };
 
 const toggleWindow = () => {

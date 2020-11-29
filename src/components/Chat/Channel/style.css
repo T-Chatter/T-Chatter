@@ -1,26 +1,3 @@
-html {
-  background-color: #060407;
-}
-
-html::-webkit-scrollbar {
-  background: #19161d;
-  width: 10px;
-  position: fixed;
-  right: 1rem;
-  top: 1rem;
-}
-
-html::-webkit-scrollbar-thumb {
-  background: #88888811;
-  border: solid 1px #88888822;
-  border-radius: 10px;
-}
-
-html::-webkit-scrollbar-thumb:hover {
-  background: #88888822;
-  border: solid 1px #88888833;
-}
-
 .message {
   padding-left: 10px;
   overflow-wrap: break-word;
