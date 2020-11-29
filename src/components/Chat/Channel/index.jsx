@@ -21,6 +21,9 @@ const Channel = () => {
   let isConnected = false;
   let showDate = false;
   const messageLimit = 200;
+  let bttvGlobalCached = useRef(null);
+  let bttvChannelCached = useRef(null);
+  let ffzGlobalCached = useRef(null);
 
   const client = tmi.client({
     channels: [channel],
@@ -55,6 +58,20 @@ const Channel = () => {
         message = insertEmotes(message, emotesObj);
       }
 
+      bttvGlobalCached.current.forEach((x) => {
+        const match = message.includes(x.code);
+        if (match) {
+          message = insertBttvEmote(message, x.code, x.id);
+        }
+      });
+
+      bttvChannelCached.current.sharedEmotes.forEach((x) => {
+        const match = message.includes(x.code);
+        if (match) {
+          message = insertBttvEmote(message, x.code, x.id);
+        }
+      });
+
       const msg = `${
         showDate ? date.getHours() + ":" + date.getMinutes() + " " : ""
       }<span style="color: ${
@@ -81,6 +98,29 @@ const Channel = () => {
       scrollToBottom();
     }
   });
+
+  const insertBttvEmote = (message, code, id) => {
+    if (message === "" || !code) return;
+    const stringReplacements = [];
+    const start = message.indexOf(code);
+    const end = start + code.length;
+    const stringToReplace = message.substring(
+      parseInt(start, 10),
+      parseInt(end, 10) + 1
+    );
+
+    stringReplacements.push({
+      stringToReplace: stringToReplace,
+      replacement: `<img src="https://cdn.betterttv.net/emote/${id}/1x" alt="${stringToReplace}" style="margin: 0 0.25rem">`,
+    });
+    const messageHTML = stringReplacements.reduce(
+      (acc, { stringToReplace, replacement }) => {
+        return acc.split(stringToReplace).join(replacement);
+      },
+      message
+    );
+    return messageHTML;
+  };
 
   const insertEmotes = (message, emotesObject) => {
     if (message === "" || !emotesObject) return;
@@ -175,6 +215,31 @@ const Channel = () => {
   };
 
   useEffect(() => {
+    // BTTV Global
+    fetch("https://api.betterttv.net/3/cached/emotes/global").then(
+      async (res) => {
+        bttvGlobalCached.current = await res.json();
+      }
+    );
+    // FFZ Global
+    // fetch("https://api.frankerfacez.com/v1/set/global").then(
+    //   async (res) => {
+    //     ffzGlobalCached.current = await res.json();
+    //   }
+    // );
+    // Get twitch id
+    fetch("https://api.frankerfacez.com/v1/user/giantwaffle").then(
+      async (res) => {
+        const { user } = await res.json();
+        // BTTV Channel
+        fetch(
+          `https://api.betterttv.net/3/cached/users/twitch/${user.twitch_id}`
+        ).then(async (res) => {
+          bttvChannelCached.current = await res.json();
+        });
+      }
+    );
+
     if (!isConnected && client.readyState() !== "CONNECTING") {
       client.connect();
       document.addEventListener("wheel", handleScrollPause);
