@@ -30,7 +30,7 @@ html::-webkit-scrollbar-thumb:hover {
 
 #root main {
   padding-top: 50px;
-  min-width: 100;
+  min-width: 100%;
   min-height: calc(100vh - 50px);
 }
 
@@ -76,7 +76,7 @@ code {
   transition: 0.3s opacity;
 }
 
-.tooltip.left::before {
+.tooltip.tooltip-left::before {
   left: initial;
   margin: initial;
 
@@ -128,6 +128,25 @@ code {
 
   border: 10px solid #333;
   border-color: transparent transparent #333 transparent;
+
+  display: none;
+
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.tooltip.tooltip-left::after {
+  content: "";
+  position: absolute;
+
+  left: 0;
+  margin-left: -15px;
+
+  top: 50%;
+  transform: translateY(-50%);
+
+  border: 10px solid #333;
+  border-color: transparent transparent transparent #333;
 
   display: none;
 

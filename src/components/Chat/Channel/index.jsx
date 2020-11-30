@@ -249,12 +249,12 @@ const Channel = () => {
     }
     return () => {
       if (isConnected) {
-        document.removeEventListener("wheel", handleScrollPause, true);
-        document.removeEventListener("keydown", handleKeydownPause, true);
-        document.removeEventListener("keyup", handleKeyupPause, true);
-        client.removeAllListeners();
         client.disconnect();
       }
+      document.removeEventListener("wheel", handleScrollPause, true);
+      document.removeEventListener("keydown", handleKeydownPause, true);
+      document.removeEventListener("keyup", handleKeyupPause, true);
+      client.removeAllListeners();
     };
   }, [
     isConnected,

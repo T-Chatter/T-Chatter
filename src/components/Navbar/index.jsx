@@ -35,7 +35,7 @@ const Navbar = () => {
           exact={true}
           activeClassName="active"
         >
-          Home
+          <i className="fas fa-plus"></i>
         </NavLink>
         <TabsContext.Consumer>
           {(tabs) =>
