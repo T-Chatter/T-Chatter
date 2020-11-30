@@ -14,7 +14,7 @@ import parse from "html-react-parser";
 const Channel = () => {
   const { removeTab, tabs } = useContext(TabsContext);
   const [channel, setChannel] = useState(
-    window.location.pathname.replace("/chat/", "")
+    window.location.hash.replace("#/chat/", "")
   );
   const tab = tabs.find((t) => t.name === channel);
   let isPaused = useRef(false);
@@ -273,7 +273,7 @@ const Channel = () => {
         Remove channel
       </button>
       <div id="messages-container">
-        {tab.messages.map((m, i) => {
+        {tab?.messages?.map((m, i) => {
           return (
             <p key={i} className="message">
               {parse(m)}

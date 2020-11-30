@@ -1,5 +1,5 @@
 import Home from "./components/Home";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import { TabsContext } from "./contexts/TabsContext";
 import Chat from "./components/Chat";
