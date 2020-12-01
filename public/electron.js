@@ -9,11 +9,12 @@ const {
   MenuItem,
 } = require("electron");
 const path = require("path");
+const { env } = require("process");
 
 let tray, window;
 
 const platform = process.platform;
-const icon = path.join(__dirname, "assets/tchatter-258x258.png");
+const icon = path.join(__dirname, "../assets/tchatter-256x256.png");
 const nIcon = nativeImage.createFromPath(icon);
 
 if (platform === "darwin") app.dock.hide();
@@ -28,7 +29,7 @@ function createWindow() {
     resizable: true,
     title: "T-Chatter",
     minHeight: 500,
-    minWidth: 200,
+    minWidth: 250,
     backgroundColor: "#060407",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -39,10 +40,13 @@ function createWindow() {
   window.on("closed", () => (window = null));
 
   // and load the index.html of the app.
-  window.loadURL("http://localhost:3000");
-
-  // Open the DevTools.
-  window.webContents.openDevTools();
+  if (env.NODE_ENV === "development") {
+    window.loadURL("http://localhost:3000/");
+    // Open the DevTools.
+    window.webContents.openDevTools();
+  } else {
+    window.loadURL(`file://${path.join(__dirname, "../build/index.html")}`);
+  }
 }
 
 // This method will be called when Electron has finished

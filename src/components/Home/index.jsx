@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import { Redirect } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { TabsContext } from "../../contexts/TabsContext";
 
@@ -6,8 +7,15 @@ import "./style.css";
 
 const Home = () => {
   const { addTab } = useContext(TabsContext);
+  const [redirect, setRedirect] = useState(false);
 
   const [channel, setChannel] = useState("");
+
+  const handleSubmit = (e) => {
+    if (e.key === "Enter") {
+      add();
+    }
+  };
 
   const add = () => {
     if (channel !== "") {
@@ -17,19 +25,26 @@ const Home = () => {
         messages: [],
       };
       addTab(tab);
+      setRedirect(true);
     }
   };
 
+  if (redirect) return <Redirect to={`/chat/${channel}`} />;
   return (
     <div className="home-container">
-      <h1>Hello World! 🌎</h1>
-      <h4>Add channel</h4>
-      <input
-        type="text"
-        value={channel}
-        onChange={(e) => setChannel(e.target.value)}
-      />
-      <button onClick={add}>Add</button>
+      <h1 className="home-title">Add channel</h1>
+      <div className="home-form">
+        <input
+          type="text"
+          value={channel}
+          onChange={(e) => setChannel(e.target.value)}
+          onKeyUp={handleSubmit}
+          className="home-form-input"
+        />
+        <button className="home-form-submit" onClick={add}>
+          Add
+        </button>
+      </div>
     </div>
   );
 };

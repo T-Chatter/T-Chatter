@@ -22,6 +22,12 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
+### `yarn start:electron` / `npm start:electron`
+
+Runs the electron app only.
+
+Make sure you start react to run this command. It won't run unless you start react is started.
+
 ### `yarn test` / `npm run test`
 
 Launches the test runner in the interactive watch mode.

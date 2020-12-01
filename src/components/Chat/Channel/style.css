@@ -1,4 +1,5 @@
 .message {
+  font-size: 14px;
   padding-left: 10px;
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -8,6 +9,9 @@
   -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .paused-btn {
@@ -21,4 +25,30 @@
   padding: 0.5rem;
   cursor: pointer;
   border: none;
+  transition: all 250ms ease;
+}
+
+.paused-btn:hover {
+  background-color: #772ce8;
+}
+
+.channel-title {
+  text-align: center;
+}
+
+.channel-remove-btn {
+  padding: 0.75rem;
+  display: block;
+  margin: auto;
+  border: none;
+  border-radius: 0.25rem;
+  color: #fff;
+  font-weight: bold;
+  background-color: #a16bf5;
+  cursor: pointer;
+  transition: all 250ms ease;
+}
+
+.channel-remove-btn:hover {
+  background-color: #772ce8;
 }

@@ -24,9 +24,14 @@ const Navbar = () => {
   return (
     <div className="navbar-container" id="nav-main">
       <div className="navbar-nav">
-        <button className="navbar-link navbar-link-icon" id="settings">
+        <NavLink
+          to="/options"
+          className="navbar-link navbar-link-icon"
+          id="settings"
+          activeClassName="active"
+        >
           <i className="fas fa-cog navbar-link-i"></i>
-        </button>
+        </NavLink>
       </div>
       <div className="navbar-nav navbar-nav-secondary">
         <NavLink
@@ -35,7 +40,7 @@ const Navbar = () => {
           exact={true}
           activeClassName="active"
         >
-          Home
+          <i className="fas fa-plus"></i>
         </NavLink>
         <TabsContext.Consumer>
           {(tabs) =>

@@ -1,0 +1,13 @@
+.options-container {
+  margin-top: 2rem;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.options-title {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
