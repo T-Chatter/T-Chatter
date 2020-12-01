@@ -8,6 +8,7 @@ import React, {
 import { Redirect } from "react-router";
 import tmi from "tmi.js";
 import { TabsContext } from "../../../contexts/TabsContext";
+import { updateTabsStorage } from "../../../App";
 import "./style.css";
 import parse from "html-react-parser";
 
@@ -96,6 +97,7 @@ const Channel = () => {
 
       container.append(msgEl);
       scrollToBottom();
+      updateTabsStorage(tabs);
     }
   });
 

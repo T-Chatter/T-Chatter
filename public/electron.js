@@ -29,7 +29,7 @@ function createWindow() {
     resizable: true,
     title: "T-Chatter",
     minHeight: 500,
-    minWidth: 200,
+    minWidth: 250,
     backgroundColor: "#060407",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
