@@ -85,14 +85,14 @@ code {
 }
 
 .tooltip.tooltip-bottom::before {
-  left: initial;
+  left: 50%;
   top: initial;
   margin: initial;
 
-  transform: translateY(0);
-  margin-bottom: 0px;
+  transform: translateY(100%) translateX(-50%);
+  margin-bottom: -12px;
 
-  bottom: -100%;
+  bottom: 0;
 }
 
 .tooltip::after {
@@ -158,4 +158,24 @@ code {
 .tooltip:hover::after {
   display: block;
   opacity: 1;
+}
+
+.w-1\/2 {
+  width: 50%;
+}
+
+.w-1\/3 {
+  width: 33%;
+}
+
+.w-2\/3 {
+  width: 66%;
+}
+
+.w-1\/4 {
+  width: 20%;
+}
+
+.w-full {
+  width: 100%;
 }

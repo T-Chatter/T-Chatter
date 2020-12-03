@@ -7,9 +7,25 @@ const {
   screen,
   Menu,
   MenuItem,
+  ipcMain,
+  ipcRenderer,
 } = require("electron");
 const path = require("path");
 const { env } = require("process");
+const Store = require("electron-store");
+
+const optionsSchema = {
+  options: {
+    tabs: {
+      clearTabs: false,
+    },
+    messages: {
+      limit: 200,
+    },
+  },
+};
+
+const store = new Store({ schema: optionsSchema, defaults: optionsSchema });
 
 let tray, window;
 
@@ -33,7 +49,9 @@ function createWindow() {
     backgroundColor: "#060407",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
-      contextIsolation: false,
+      // contextIsolation: true,
+      // enableRemoteModule: false,
+      nodeIntegration: true,
     },
   });
 
@@ -41,11 +59,13 @@ function createWindow() {
 
   // and load the index.html of the app.
   if (env.NODE_ENV === "development") {
-    window.loadURL("http://localhost:3000/");
+    // window.loadURL("http://localhost:3000/");
+    window.loadURL(`file://${path.join(__dirname, "../build/index.html")}`);
     // Open the DevTools.
     window.webContents.openDevTools();
   } else {
     window.loadURL(`file://${path.join(__dirname, "../build/index.html")}`);
+    Menu.setApplicationMenu(null);
   }
 }
 
@@ -53,7 +73,6 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  Menu.setApplicationMenu(null);
   createTray();
   createWindow();
 
@@ -121,3 +140,17 @@ const windowPosition = () => {
 
   return { x, y };
 };
+
+app.on("will-quit", (e) => {
+  if (store.get("options.tabs.clearTabs")) {
+    window.webContents.send("clearTabs");
+  }
+});
+
+ipcMain.on("updateOption", (e, key, value) => {
+  store.set(`options.${key}`, value);
+});
+
+ipcMain.handle("getOptions", (e) => {
+  return store.get("options");
+});
