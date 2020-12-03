@@ -200,6 +200,11 @@ h3.options-input-title {
     background-color: #772ce8;
   }
 
+  .options-save-btn.saved:hover {
+    background-color: #57d467;
+    color: #333;
+  }
+
   .option-input {
     margin: 0;
     justify-content: start;
