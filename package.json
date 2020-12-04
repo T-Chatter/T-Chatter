@@ -8,6 +8,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "concurrently": "^5.3.0",
+    "electron-store": "^6.0.1",
     "html-react-parser": "^0.14.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -35,14 +36,20 @@
   ],
   "repository": "https://github.com/Sebbev/T-Chatter/",
   "scripts": {
-    "start": "concurrently \"cross-env BROWSER=none npm run start:react\" \"wait-on http://localhost:3000 && npm run start:electron\"",
-    "start:react": "cross-env NODE_ENV=development react-scripts start",
-    "start:electron": "wait-on http://localhost:3000 && cross-env NODE_ENV=development electron .",
+    "start": "cross-env NODE_ENV=development npm run electron .",
     "dist": "npm run build:react && npm run build:electron",
     "build:react": "cross-env NODE_ENV=production react-scripts build",
     "build:electron": "cross-env NODE_ENV=production electron-builder",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "watch": "npm-watch",
+    "test": "react-scripts test"
+  },
+  "watch": {
+    "build:react": {
+      "patterns": [
+        "src"
+      ],
+      "extensions": "js,jsx"
+    }
   },
   "build": {
     "appId": "org.tchatter",
@@ -88,6 +95,7 @@
   "devDependencies": {
     "cross-env": "^7.0.2",
     "electron": "^11.0.3",
-    "electron-builder": "^22.9.1"
+    "electron-builder": "^22.9.1",
+    "npm-watch": "^0.7.0"
   }
 }

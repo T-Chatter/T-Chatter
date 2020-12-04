@@ -11,9 +11,11 @@ import { TabsContext } from "../../../contexts/TabsContext";
 import { updateTabsStorage } from "../../../App";
 import "./style.css";
 import parse from "html-react-parser";
+import { OptionsContext } from "../../../contexts/OptionsContext";
 
 const Channel = () => {
   const { removeTab, tabs } = useContext(TabsContext);
+  const { options } = useContext(OptionsContext);
   const [channel, setChannel] = useState(
     window.location.hash.replace("#/chat/", "")
   );
@@ -21,7 +23,7 @@ const Channel = () => {
   let isPaused = useRef(false);
   let isConnected = false;
   let showDate = false;
-  const messageLimit = 200;
+  const messageLimit = options.messages.limit;
   let bttvGlobalCached = useRef(null);
   let bttvChannelCached = useRef(null);
   let ffzGlobalCached = useRef(null);
@@ -77,7 +79,7 @@ const Channel = () => {
         showDate ? date.getHours() + ":" + date.getMinutes() + " " : ""
       }<span style="color: ${
         userState.color ?? "#1c82e7"
-      }; font-weight: bold;">${
+      }; font-weight: bold; word-wrap: none;">${
         userState.badges?.broadcaster ? "[B]&nbsp;" : ""
       }${userState.mod ? "[M]&nbsp;" : ""}
       ${userState.subscriber ? "[S]&nbsp;" : ""}${userState.username}</span>${

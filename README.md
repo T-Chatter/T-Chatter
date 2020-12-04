@@ -8,37 +8,29 @@ In the project directory, you can run:
 
 ### `yarn start` / `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Runs the app in the development mode.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### `yarn watch` / `npm run watch`
 
-### `yarn start:react` / `npm start:react`
-
-Runs the app in the development mode in the browser only (does not start electron).\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `yarn start:electron` / `npm start:electron`
-
-Runs the electron app only.
-
-Make sure you start react to run this command. It won't run unless you start react is started.
+Will watch for changes in `src` directory and build when a change is detected.
 
 ### `yarn test` / `npm run test`
 
 Launches the test runner in the interactive watch mode.
 
-### `yarn build` / `npm run build`
+### `yarn dist` / `npm run dist`
+
+Builds the react and electron projects to the `packages` folder.\
+It will create an installer and also a `*-unpacked` folder with the app unpacked.
+
+### `yarn build:react` / `npm run build:react`
 
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### `yarn build` / `npm run build:electron`
+
+Builds the app without building the react project first to the `packages` folder.
 
 ## Contributing
 
