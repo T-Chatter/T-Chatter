@@ -8,24 +8,45 @@ const {
   Menu,
   MenuItem,
   ipcMain,
-  ipcRenderer,
 } = require("electron");
 const path = require("path");
 const { env } = require("process");
 const Store = require("electron-store");
 
-const optionsSchema = {
+const optionsDefaults = {
   options: {
     tabs: {
       clearTabs: false,
     },
-    messages: {
-      limit: 200,
+    chat: {
+      messages: {
+        limit: 200,
+      },
+      smoothScroll: true,
     },
   },
 };
 
-const store = new Store({ schema: optionsSchema, defaults: optionsSchema });
+const store = new Store({
+  defaults: optionsDefaults,
+  clearInvalidConfig: true,
+  migrations: {
+    "0.1.0": (store) => {
+      store.delete("options.messages");
+      store.set(
+        "options.chat.messages.limit",
+        store.get(
+          "options.messages.limit",
+          optionsDefaults.options.chat.messages.limit
+        )
+      );
+      store.set("options.chat.smoothScroll", true);
+    },
+    "0.1.1": (store) => {
+      store.delete("options.messages");
+    },
+  },
+});
 
 let tray, window;
 

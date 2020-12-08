@@ -14,13 +14,18 @@
   align-items: center;
 }
 
-.paused-btn {
+#paused {
   display: none;
+  flex-direction: row;
   position: fixed;
   bottom: 0;
+  width: 100%;
+}
+
+.paused-btn {
   background-color: #a16bf5;
   color: #fff;
-  width: 100%;
+  width: 85%;
   text-align: center;
   padding: 0.5rem;
   cursor: pointer;
@@ -30,6 +35,21 @@
 
 .paused-btn:hover {
   background-color: #772ce8;
+}
+
+.scroll-top-btn {
+  background-color: #772ce8;
+  color: #fff;
+  width: 15%;
+  text-align: center;
+  padding: 0.5rem;
+  cursor: pointer;
+  border: none;
+  transition: all 250ms ease;
+}
+
+.paused-btn:hover {
+  background-color: #a16bf5;
 }
 
 .channel-title {

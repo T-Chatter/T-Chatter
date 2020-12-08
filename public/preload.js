@@ -4,8 +4,11 @@ window.optionsSchema = {
     tabs: {
       clearTabs: false,
     },
-    messages: {
-      limit: 200,
+    chat: {
+      messages: {
+        limit: 200,
+      },
+      smoothScroll: true,
     },
   },
 };
