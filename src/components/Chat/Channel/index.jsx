@@ -288,6 +288,9 @@ const Channel = () => {
   return (
     <div>
       <h1 className="channel-title">{channel}</h1>
+      <p className="channel-tip">
+        Click the active tab for additional actions.
+      </p>
       <button onClick={remove} className="channel-remove-btn">
         Remove channel
       </button>
