@@ -1,8 +1,24 @@
 # T-Chatter
 
-A twitch chat client build with Electron and React.
+T-Chatter is a twitch chat client build with Electron and React.
 
-## Available Scripts
+- Website <a href="https://t-chatter.github.io/" target="_blank">https://t-chatter.github.io/</a>
+
+<div>
+  <img src="https://t-chatter.github.io/assets/T-Chatter_1.jpg" alt="T-Chatter logo" height="400" style="display: inline;" />
+  <img src="https://t-chatter.github.io/assets/T-Chatter_3.jpg" alt="T-Chatter logo" height="400" style="display: inline;" />
+  <img src="https://t-chatter.github.io/assets/T-Chatter_2.jpg" alt="T-Chatter logo" height="400" style="display: inline;" />
+</div>
+
+I started this project as a project for me to learn electron / react so if the application is buggy and the code is a huge spaghetti mess thats why...
+
+## Download
+
+You can download the installer <a href="https://t-chatter.github.io/" target="_blank">here</a> or go to the <a href="https://github.com/T-Chatter/T-Chatter/releases/latest" target="_blank">releases</a> page.
+
+## Building the application yourself.
+
+### Available Scripts
 
 In the project directory, you can run:
 

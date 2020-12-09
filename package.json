@@ -1,7 +1,7 @@
 {
   "name": "t-chatter",
   "description": "A Twitch chat client.",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
@@ -21,7 +21,7 @@
   },
   "author": {
     "name": "Sebastian Vallin",
-    "url": "https://github.com/Sebbev"
+    "url": "https://t-chatter.github.io/"
   },
   "license": "MIT",
   "keywords": [
@@ -34,7 +34,7 @@
     "desktop",
     "app"
   ],
-  "repository": "https://github.com/Sebbev/T-Chatter/",
+  "repository": "https://github.com/T-Chatter/T-Chatter/",
   "scripts": {
     "start": "cross-env NODE_ENV=development npm run electron .",
     "dist": "npm run build:react && npm run build:electron",
@@ -52,7 +52,7 @@
     }
   },
   "build": {
-    "appId": "org.tchatter",
+    "appId": "org.t-chatter",
     "productName": "T-Chatter",
     "copyright": "Copyright © 2020 Sebastian Vallin",
     "artifactName": "${productName}-${version}.${ext}",
