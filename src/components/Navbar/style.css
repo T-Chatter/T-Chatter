@@ -11,6 +11,7 @@
   height: 75px;
   overflow-x: auto;
   overflow-y: hidden;
+  z-index: 10;
 }
 
 .navbar-container::-webkit-scrollbar {
@@ -88,4 +89,53 @@
 
 .navbar-link.active:hover::before {
   background-color: #ffffff;
+}
+
+.navbar-additional {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  flex-wrap: wrap;
+  position: fixed;
+  padding: 0.5rem;
+  left: 0;
+  top: 75px;
+  width: 100%;
+  background-color: #a16bf5;
+  color: #ffffff;
+  z-index: 5;
+  transition: all 150ms ease-out;
+}
+
+.navbar-additional.hidden {
+  top: 0;
+}
+
+.navbar-additional .open-stream-btn {
+  font-weight: bold;
+  padding: 0.5rem;
+  background-color: #060407;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 150ms ease-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navbar-additional .open-stream-btn:focus,
+.navbar-additional .open-stream-btn:active {
+  outline: none;
+}
+
+.navbar-additional .open-stream-btn:hover {
+  padding: 0.5rem 0.75rem;
+  background-color: #2c2331;
+}
+
+.navbar-additional .open-stream-btn i {
+  margin-right: 0.25rem;
 }

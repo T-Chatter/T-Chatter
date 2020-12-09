@@ -1,11 +1,15 @@
 window.ipcRenderer = require("electron").ipcRenderer;
+window.shell = require("electron").shell;
 window.optionsSchema = {
   options: {
     tabs: {
       clearTabs: false,
     },
-    messages: {
-      limit: 200,
+    chat: {
+      messages: {
+        limit: 200,
+      },
+      smoothScroll: true,
     },
   },
 };

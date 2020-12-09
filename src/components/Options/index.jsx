@@ -6,15 +6,18 @@ import "./style.css";
 const Options = () => {
   const optionsContext = useContext(OptionsContext);
   let clearTabs = optionsContext.options?.tabs?.clearTabs;
-  let messageLimit = optionsContext.options?.messages?.limit;
+  let messageLimit = optionsContext.options?.chat?.messages?.limit;
+  let smoothScroll = optionsContext.options?.chat?.smoothScroll;
 
+  const [isNotValid, setIsNotValid] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [messageLimitError, setMessageLimitError] = useState("");
 
   const onChange = (e) => {
     const btn = document.getElementById("save-btn");
     btn.innerText = "Save";
     btn.classList.remove("saved");
-    const { id, value, checked } = e.target;
+    let { id, value, checked } = e.target;
     if (id) {
       switch (id) {
         case "clearTabs":
@@ -23,22 +26,45 @@ const Options = () => {
         case "messageLimit":
           messageLimit = value;
           break;
+        case "smoothScroll":
+          smoothScroll = checked;
+          break;
         default:
           break;
       }
+    }
+
+    if (
+      messageLimit === "" ||
+      messageLimit <= 0 ||
+      messageLimit >= 2000 ||
+      messageLimit.includes(".") ||
+      messageLimit.includes(",")
+    ) {
+      setIsNotValid(true);
+    } else if (smoothScroll === null || clearTabs === null) {
+      setMessageLimitError("The field contains an invalid character.");
+      setIsNotValid(true);
+    } else {
+      setIsNotValid(false);
+      setMessageLimitError("");
     }
   };
 
   useEffect(() => {
     if (isLoading) {
-      if (clearTabs !== undefined && messageLimit !== undefined) {
+      if (
+        (clearTabs !== undefined && messageLimit !== undefined) ||
+        smoothScroll !== undefined
+      ) {
         setIsLoading(!isLoading);
       }
     } else {
       document.getElementById("clearTabs").checked = clearTabs;
+      document.getElementById("smoothScroll").checked = smoothScroll;
       document.getElementById("messageLimit").value = messageLimit;
     }
-  }, [clearTabs, messageLimit, isLoading]);
+  }, [clearTabs, messageLimit, isLoading, smoothScroll]);
 
   const saveOptions = (e) => {
     e.target.animate(
@@ -54,11 +80,17 @@ const Options = () => {
         easing: "ease-in",
       }
     );
+
     const btn = document.getElementById("save-btn");
     btn.innerText = "Saved!";
     btn.classList.add("saved");
     window.ipcRenderer.send("updateOption", "tabs.clearTabs", clearTabs);
-    window.ipcRenderer.send("updateOption", "messages.limit", messageLimit);
+    window.ipcRenderer.send(
+      "updateOption",
+      "chat.messages.limit",
+      messageLimit
+    );
+    window.ipcRenderer.send("updateOption", "chat.smoothScroll", smoothScroll);
     optionsContext.update();
   };
 
@@ -82,6 +114,20 @@ const Options = () => {
         </div>
       </div>
       <div className="options-input-container">
+        <h3 className="options-input-title w-1/2">Smooth scroll</h3>
+        <div className="w-1/2 option-input">
+          <label className="switch">
+            <input
+              type="checkbox"
+              id="smoothScroll"
+              onChange={onChange}
+              defaultChecked={smoothScroll}
+            />
+            <span className="slider round"></span>
+          </label>
+        </div>
+      </div>
+      <div className="options-input-container">
         <h3 className="options-input-title w-1/2">
           Message limit
           <span
@@ -93,12 +139,20 @@ const Options = () => {
         </h3>
         <div className="w-1/2 option-input">
           <input
-            type="text"
+            type="number"
             id="messageLimit"
             className="options-form-input"
             onChange={onChange}
             defaultValue={messageLimit}
           />
+          <p
+            id="messageLimitError"
+            className={`options-error ${
+              messageLimitError === "" ? "hidden" : null
+            }`}
+          >
+            {messageLimitError}
+          </p>
         </div>
       </div>
       <div className="w-full options-save-container">
@@ -107,6 +161,7 @@ const Options = () => {
           onClick={saveOptions}
           className="options-save-btn"
           id="save-btn"
+          disabled={isNotValid}
         >
           Save
         </button>

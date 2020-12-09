@@ -23,7 +23,8 @@ const Channel = () => {
   let isPaused = useRef(false);
   let isConnected = false;
   let showDate = false;
-  const messageLimit = options.messages.limit;
+  const messageLimit = options?.messages?.limit ?? 200;
+  const smoothScroll = options?.chat?.smoothScroll ?? true;
   let bttvGlobalCached = useRef(null);
   let bttvChannelCached = useRef(null);
   let ffzGlobalCached = useRef(null);
@@ -152,13 +153,27 @@ const Channel = () => {
   };
 
   const scrollToBottom = useCallback(
-    (ignorePause = false) => {
+    (ignorePause = false, smooth = smoothScroll) => {
       if (!isPaused.current || ignorePause) {
-        window.scrollTo(0, document.body.scrollHeight);
+        window.scrollTo({
+          behavior: smooth ? "smooth" : "auto",
+          top: document.body.scrollHeight,
+          left: 0,
+        });
       }
     },
-    [isPaused]
+    [isPaused, smoothScroll]
   );
+
+  const scrollToTop = (e, smooth = smoothScroll) => {
+    if (isPaused.current) {
+      window.scrollTo({
+        behavior: smooth ? "smooth" : "auto",
+        top: 0,
+        left: 0,
+      });
+    }
+  };
 
   const unPause = useCallback(() => {
     scrollToBottom(true);
@@ -273,6 +288,9 @@ const Channel = () => {
   return (
     <div>
       <h1 className="channel-title">{channel}</h1>
+      <p className="channel-tip">
+        Click the active tab for additional actions.
+      </p>
       <button onClick={remove} className="channel-remove-btn">
         Remove channel
       </button>
@@ -285,9 +303,14 @@ const Channel = () => {
           );
         })}
       </div>
-      <button id="paused" className="paused-btn" onClick={unPause}>
-        Chat Paused
-      </button>
+      <div id="paused">
+        <button className="paused-btn" onClick={unPause}>
+          Chat Paused
+        </button>
+        <button className="scroll-top-btn" onClick={scrollToTop}>
+          <i class="fas fa-arrow-up"></i>
+        </button>
+      </div>
     </div>
   );
 };
