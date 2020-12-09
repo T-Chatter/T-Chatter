@@ -73,6 +73,7 @@ const Navbar = () => {
             className="navbar-link navbar-link-icon"
             id="settings"
             activeClassName="active"
+            onClick={displayAdditional}
           >
             <i className="fas fa-cog navbar-link-i"></i>
           </NavLink>
@@ -83,6 +84,7 @@ const Navbar = () => {
             className="navbar-link"
             exact={true}
             activeClassName="active"
+            onClick={displayAdditional}
           >
             <i className="fas fa-plus"></i>
           </NavLink>
