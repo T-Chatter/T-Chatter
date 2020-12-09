@@ -24,6 +24,9 @@ const optionsDefaults = {
       },
       smoothScroll: true,
     },
+    general: {
+      alwaysOnTop: false,
+    },
   },
 };
 
@@ -44,6 +47,9 @@ const store = new Store({
     },
     "0.1.1": (store) => {
       store.delete("options.messages");
+    },
+    "0.2.2": (store) => {
+      store.set("options.general.alwaysOnTop", false);
     },
   },
 });
@@ -68,6 +74,10 @@ function createWindow() {
     minHeight: 500,
     minWidth: 250,
     backgroundColor: "#060407",
+    alwaysOnTop: store.get(
+      "options.general.alwaysOnTop",
+      optionsDefaults.options.general.alwaysOnTop
+    ),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       // contextIsolation: true,
@@ -170,6 +180,9 @@ app.on("will-quit", (e) => {
 
 ipcMain.on("updateOption", (e, key, value) => {
   store.set(`options.${key}`, value);
+  if (key === "general.alwaysOnTop") {
+    window.setAlwaysOnTop(value);
+  }
 });
 
 ipcMain.handle("getOptions", (e) => {
