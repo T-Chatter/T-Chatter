@@ -11,5 +11,8 @@ window.optionsSchema = {
       },
       smoothScroll: true,
     },
+    general: {
+      allwaysOnTop: false,
+    },
   },
 };

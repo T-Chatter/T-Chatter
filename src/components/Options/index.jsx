@@ -8,6 +8,7 @@ const Options = () => {
   let clearTabs = optionsContext.options?.tabs?.clearTabs;
   let messageLimit = optionsContext.options?.chat?.messages?.limit;
   let smoothScroll = optionsContext.options?.chat?.smoothScroll;
+  let alwaysOnTop = optionsContext.options?.general?.alwaysOnTop;
 
   const [isNotValid, setIsNotValid] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -28,6 +29,9 @@ const Options = () => {
           break;
         case "smoothScroll":
           smoothScroll = checked;
+          break;
+        case "alwaysOnTop":
+          alwaysOnTop = checked;
           break;
         default:
           break;
@@ -55,16 +59,18 @@ const Options = () => {
     if (isLoading) {
       if (
         (clearTabs !== undefined && messageLimit !== undefined) ||
-        smoothScroll !== undefined
+        smoothScroll !== undefined ||
+        alwaysOnTop !== undefined
       ) {
         setIsLoading(!isLoading);
       }
     } else {
       document.getElementById("clearTabs").checked = clearTabs;
       document.getElementById("smoothScroll").checked = smoothScroll;
+      document.getElementById("alwaysOnTop").checked = alwaysOnTop;
       document.getElementById("messageLimit").value = messageLimit;
     }
-  }, [clearTabs, messageLimit, isLoading, smoothScroll]);
+  }, [clearTabs, messageLimit, isLoading, smoothScroll, alwaysOnTop]);
 
   const saveOptions = (e) => {
     e.target.animate(
@@ -91,70 +97,102 @@ const Options = () => {
       messageLimit
     );
     window.ipcRenderer.send("updateOption", "chat.smoothScroll", smoothScroll);
+    window.ipcRenderer.send("updateOption", "general.alwaysOnTop", alwaysOnTop);
     optionsContext.update();
   };
 
   return isLoading ? (
     <h1 className="options-loading">Loading...</h1>
   ) : (
-    <Container className="options-container">
+    <Container>
       <h1 className="options-title">Options</h1>
-      <div className="options-input-container">
-        <h3 className="options-input-title w-1/2">Clear tabs on exit</h3>
-        <div className="w-1/2 option-input">
-          <label className="switch">
+
+      {/* General options */}
+      <div className="options-category">
+        <h3 className="options-category-title">General</h3>
+        <div className="options-input-container">
+          <h4 className="options-input-title w-1/2">Window alwyas on top</h4>
+          <div className="w-1/2 option-input">
+            <label className="switch">
+              <input
+                type="checkbox"
+                id="alwaysOnTop"
+                onChange={onChange}
+                defaultChecked={alwaysOnTop}
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      {/* Chat options */}
+      <div className="options-category">
+        <h3 className="options-category-title">Chat</h3>
+        <div className="options-input-container">
+          <h4 className="options-input-title w-1/2">Smooth scroll</h4>
+          <div className="w-1/2 option-input">
+            <label className="switch">
+              <input
+                type="checkbox"
+                id="smoothScroll"
+                onChange={onChange}
+                defaultChecked={smoothScroll}
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
+        </div>
+        <div className="options-input-container">
+          <h4 className="options-input-title w-1/2">
+            Message limit
+            <span
+              className="tooltip tooltip-bottom options-tooltip"
+              data-text="Default: 200. May cause performance issues if set too high."
+            >
+              <i class="fas fa-question-circle"></i>
+            </span>
+          </h4>
+          <div className="w-1/2 option-input">
             <input
-              type="checkbox"
-              id="clearTabs"
+              type="number"
+              id="messageLimit"
+              className="options-form-input"
               onChange={onChange}
-              defaultChecked={clearTabs}
+              defaultValue={messageLimit}
             />
-            <span className="slider round"></span>
-          </label>
+            <p
+              id="messageLimitError"
+              className={`options-error ${
+                messageLimitError === "" ? "hidden" : null
+              }`}
+            >
+              {messageLimitError}
+            </p>
+          </div>
         </div>
       </div>
-      <div className="options-input-container">
-        <h3 className="options-input-title w-1/2">Smooth scroll</h3>
-        <div className="w-1/2 option-input">
-          <label className="switch">
-            <input
-              type="checkbox"
-              id="smoothScroll"
-              onChange={onChange}
-              defaultChecked={smoothScroll}
-            />
-            <span className="slider round"></span>
-          </label>
+
+      {/* Tab options */}
+      <div className="options-category last">
+        <h3 className="options-category-title">Tabs</h3>
+        <div className="options-input-container">
+          <h4 className="options-input-title w-1/2">Clear tabs on exit</h4>
+          <div className="w-1/2 option-input">
+            <label className="switch">
+              <input
+                type="checkbox"
+                id="clearTabs"
+                onChange={onChange}
+                defaultChecked={clearTabs}
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
         </div>
       </div>
-      <div className="options-input-container">
-        <h3 className="options-input-title w-1/2">
-          Message limit
-          <span
-            className="tooltip tooltip-bottom options-tooltip"
-            data-text="Default: 200. May cause performance issues if set too high."
-          >
-            <i class="fas fa-question-circle"></i>
-          </span>
-        </h3>
-        <div className="w-1/2 option-input">
-          <input
-            type="number"
-            id="messageLimit"
-            className="options-form-input"
-            onChange={onChange}
-            defaultValue={messageLimit}
-          />
-          <p
-            id="messageLimitError"
-            className={`options-error ${
-              messageLimitError === "" ? "hidden" : null
-            }`}
-          >
-            {messageLimitError}
-          </p>
-        </div>
-      </div>
+
+      {/* Save button */}
       <div className="w-full options-save-container">
         <button
           type="button"

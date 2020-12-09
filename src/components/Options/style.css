@@ -1,7 +1,7 @@
-.options-container {
-  margin-top: 2rem;
-  padding: 0 1rem;
+.container {
+  padding: 0 1rem 1rem 1rem;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   flex-wrap: wrap;
 }
@@ -63,8 +63,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  margin: 0.5rem 1rem;
 }
 
 .options-input-container input[type="checkbox"] {
@@ -152,9 +150,9 @@ input:checked + .slider:before {
   margin-left: 0.5rem;
 }
 
-h3.options-input-title {
+.options-input-title {
   margin-top: 1rem;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
   text-align: center;
 }
 
@@ -178,6 +176,20 @@ h3.options-input-title {
 
 .options-error.hidden {
   display: none;
+}
+
+.options-category {
+  border-bottom: solid #a16bf599 1px;
+  padding-bottom: 1rem;
+}
+
+.options-category.last {
+  border-bottom: none;
+  padding-bottom: 1rem;
+}
+
+.options-category-title {
+  text-align: center;
 }
 
 @keyframes animate-save {
@@ -204,7 +216,7 @@ h3.options-input-title {
 }
 
 @media screen and (min-width: 475px) {
-  h3.options-input-title {
+  .options-input-title {
     margin-top: 1rem;
     margin-bottom: 1rem;
     text-align: left;
@@ -236,5 +248,9 @@ h3.options-input-title {
     align-items: center;
     justify-content: space-around;
     margin: 0.5rem 1rem;
+  }
+
+  .options-category-title {
+    text-align: left;
   }
 }
