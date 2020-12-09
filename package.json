@@ -1,7 +1,7 @@
 {
   "name": "t-chatter",
   "description": "A Twitch chat client.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
@@ -53,6 +53,9 @@
   },
   "build": {
     "appId": "org.tchatter",
+    "productName": "T-Chatter",
+    "copyright": "Copyright © 2020 Sebastian Vallin",
+    "artifactName": "${productName}-${version}.${ext}",
     "mac": {
       "category": "public.app-category.video"
     },
