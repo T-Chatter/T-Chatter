@@ -36,7 +36,7 @@
   ],
   "repository": "https://github.com/T-Chatter/T-Chatter/",
   "scripts": {
-    "start": "cross-env NODE_ENV=development npm run electron .",
+    "start": "cross-env NODE_ENV=development electron .",
     "dist": "npm run build:react && npm run build:electron",
     "build:react": "cross-env NODE_ENV=production react-scripts build",
     "build:electron": "cross-env NODE_ENV=production electron-builder",
