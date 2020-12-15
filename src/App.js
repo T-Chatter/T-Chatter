@@ -6,6 +6,7 @@ import Chat from "./components/Chat";
 import { useState, useEffect } from "react";
 import Options from "./components/Options";
 import { OptionsContext } from "./contexts/OptionsContext";
+import Login from "./components/Options/Login";
 // const ipcRenderer = require("electron").ipcRenderer;
 
 export const updateTabsStorage = (tabs) => {
@@ -61,7 +62,11 @@ function App() {
 
   return (
     <OptionsContext.Provider
-      value={{ save: saveOptions, update: updateOptions, options: userOptions }}
+      value={{
+        save: saveOptions,
+        update: updateOptions,
+        options: userOptions,
+      }}
     >
       <TabsContext.Provider
         value={{ tabs: userTabs, addTab: addTab, removeTab: removeTab }}
@@ -76,9 +81,15 @@ function App() {
               <Route path="/chat">
                 <Chat />
               </Route>
-              <Route path="/options">
-                <Options />
-              </Route>
+              <Route
+                path="/options"
+                render={({ match: { url } }) => (
+                  <>
+                    <Route path={`${url}/`} component={Options} exact />
+                    <Route path={`${url}/login`} component={Login} />
+                  </>
+                )}
+              />
             </Switch>
           </main>
         </Router>

@@ -14,5 +14,9 @@ window.optionsSchema = {
     general: {
       allwaysOnTop: false,
     },
+    auth: {
+      token: "",
+      scope: "",
+    },
   },
 };

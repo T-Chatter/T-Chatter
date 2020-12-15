@@ -12,6 +12,7 @@ const {
 const path = require("path");
 const { env } = require("process");
 const Store = require("electron-store");
+const express = require("express");
 
 const optionsDefaults = {
   options: {
@@ -26,6 +27,10 @@ const optionsDefaults = {
     },
     general: {
       alwaysOnTop: false,
+    },
+    auth: {
+      token: "",
+      scope: "",
     },
   },
 };
@@ -51,10 +56,14 @@ const store = new Store({
     "0.2.2": (store) => {
       store.set("options.general.alwaysOnTop", false);
     },
+    "0.3.0": (store) => {
+      store.set("options.auth.token", "");
+      store.set("options.auth.scope", "");
+    },
   },
 });
 
-let tray, window;
+let tray, window, authWindow;
 
 const platform = process.platform;
 const icon = path.join(__dirname, "../assets/tchatter-256x256.png");
@@ -80,8 +89,7 @@ function createWindow() {
     ),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
-      // contextIsolation: true,
-      // enableRemoteModule: false,
+      contextIsolation: false,
       nodeIntegration: true,
     },
   });
@@ -98,6 +106,35 @@ function createWindow() {
     window.loadURL(`file://${path.join(__dirname, "../build/index.html")}`);
     Menu.setApplicationMenu(null);
   }
+}
+
+const localhostServer = express();
+const port = 6749;
+
+localhostServer.get("/token", (req, res) => {
+  res.sendFile(path.join(__dirname + "/token/token.html"));
+});
+
+localhostServer.get("/access_token", (req, res) => {
+  const { access_token, scope, token_type } = req.query;
+  window.webContents.send("loginCallback", access_token, scope, token_type);
+  authWindow.close();
+});
+
+function createAuthWindow() {
+  authWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    show: false,
+  });
+
+  let localhostServerInstance = localhostServer.listen(port);
+
+  authWindow.on("closed", () => {
+    window.webContents.send("loginCallback");
+    localhostServerInstance.close();
+    authWindow = null;
+  });
 }
 
 // This method will be called when Electron has finished
@@ -156,19 +193,6 @@ const windowPosition = () => {
   const x = screenBounds.width / 2 - windowBounds.width / 2;
   const y = screenBounds.height / 2 - windowBounds.height / 2;
 
-  // For tray "popup"
-  // if (platform === "darwin") {
-  //   x = Math.round(
-  //     trayBounds.x + trayBounds.width / 2 - windowBounds.width / 2
-  //   );
-  //   y = Math.round(trayBounds.y + trayBounds.height);
-  // } else {
-  //   x = Math.round(
-  //     trayBounds.x + trayBounds.width / 2 - windowBounds.width / 2
-  //   );
-  //   y = Math.round(trayBounds.y + trayBounds.height);
-  // }
-
   return { x, y };
 };
 
@@ -187,4 +211,13 @@ ipcMain.on("updateOption", (e, key, value) => {
 
 ipcMain.handle("getOptions", (e) => {
   return store.get("options");
+});
+
+ipcMain.on("startLogin", (e, authUrl) => {
+  createAuthWindow();
+  authWindow.loadURL(authUrl);
+  authWindow.show();
+  authWindow.webContents.on("will-navigate", (e, newUrl) => {
+    console.log(newUrl);
+  });
 });
