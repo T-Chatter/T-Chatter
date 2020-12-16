@@ -20,6 +20,7 @@
   position: fixed;
   bottom: 0;
   width: 100%;
+  height: 40px;
 }
 
 .paused-btn {
@@ -31,6 +32,7 @@
   cursor: pointer;
   border: none;
   transition: all 250ms ease;
+  height: 100%;
 }
 
 .paused-btn:hover {
@@ -38,6 +40,7 @@
 }
 
 .scroll-top-btn {
+  height: 100%;
   background-color: #772ce8;
   color: #fff;
   width: 15%;
@@ -80,4 +83,107 @@
   font-size: smaller;
   font-style: italic;
   margin-bottom: 1rem;
+}
+
+.messages-chat-container {
+  display: flex;
+  position: fixed;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+}
+
+.messages-chat-container .textarea {
+  display: block;
+  background-color: #121013;
+  width: 80%;
+  overflow: auto;
+  resize: none;
+  min-height: 20px;
+  max-height: 25vh;
+  line-height: 20px;
+  border: #a16bf5 solid 2px;
+  padding: 0.5rem;
+  appearance: none;
+  transition: all 250ms ease-out;
+}
+
+.messages-chat-container .textarea:focus {
+  background-color: #060407;
+  border: #772ce8 solid 2px;
+  outline: none;
+}
+
+.messages-chat-container .textarea[contentEditable="false"] {
+  border: #d45757 solid 2px;
+}
+
+.send-btn {
+  background-color: #a16bf5;
+  color: #fff;
+  width: 20%;
+  text-align: center;
+  padding: 0.5rem;
+  cursor: pointer;
+  border: none;
+  min-height: 20px;
+  transition: all 250ms ease;
+}
+
+.send-btn:hover,
+.send-btn:focus {
+  background-color: #772ce8;
+  outline: none;
+}
+
+.send-btn:disabled {
+  background-color: #d45757;
+}
+
+.send-btn:disabled:hover {
+  background-color: #9e4141;
+}
+
+.chat-container {
+  position: absolute;
+  height: 100%;
+  overflow: hidden;
+}
+
+.chat-container#messages-container {
+  min-height: 100%;
+  max-height: 100%;
+  overflow-y: scroll;
+}
+
+#messages-container {
+  height: 100%;
+  width: 100%;
+  padding-bottom: 1rem;
+  overflow-y: auto;
+}
+
+#messages-container::-webkit-scrollbar,
+.textarea::-webkit-scrollbar {
+  background: #19161d;
+  width: 10px;
+  position: fixed;
+  right: 1rem;
+  top: 1rem;
+}
+
+#messages-container::-webkit-scrollbar-thumb,
+.textarea::-webkit-scrollbar-thumb {
+  background: #88888811;
+  border: solid 1px #88888822;
+  border-radius: 10px;
+}
+
+#messages-container::-webkit-scrollbar-thumb:hover,
+.textarea::-webkit-scrollbar-thumb:hover {
+  background: #88888822;
+  border: solid 1px #88888833;
 }

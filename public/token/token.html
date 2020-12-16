@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+  </head>
+  <body>
+    <h1 style="text-align: center">
+      Successfully authenticated with twitch. You can now close this window.
+    </h1>
+  </body>
+
+  <script>
+    const qParams = window.location.hash.replace("#", "");
+    fetch(window.location.origin + "/access_token?" + qParams);
+  </script>
+</html>

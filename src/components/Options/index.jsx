@@ -1,18 +1,26 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { OptionsContext } from "../../contexts/OptionsContext";
 import Container from "../Container";
+import { CLIENT_ID } from "../../constants";
 import "./style.css";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const Options = () => {
   const optionsContext = useContext(OptionsContext);
+  const authContext = useContext(AuthContext);
   let clearTabs = optionsContext.options?.tabs?.clearTabs;
   let messageLimit = optionsContext.options?.chat?.messages?.limit;
   let smoothScroll = optionsContext.options?.chat?.smoothScroll;
   let alwaysOnTop = optionsContext.options?.general?.alwaysOnTop;
+  let token = optionsContext.options?.auth?.token;
+  let scope = optionsContext.options?.auth?.scope;
 
   const [isNotValid, setIsNotValid] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [messageLimitError, setMessageLimitError] = useState("");
+  const [userName, setUserName] = useState("");
+  const [userId, setUserId] = useState("");
 
   const onChange = (e) => {
     const btn = document.getElementById("save-btn");
@@ -60,7 +68,9 @@ const Options = () => {
       if (
         (clearTabs !== undefined && messageLimit !== undefined) ||
         smoothScroll !== undefined ||
-        alwaysOnTop !== undefined
+        alwaysOnTop !== undefined ||
+        token !== undefined ||
+        scope !== undefined
       ) {
         setIsLoading(!isLoading);
       }
@@ -69,8 +79,32 @@ const Options = () => {
       document.getElementById("smoothScroll").checked = smoothScroll;
       document.getElementById("alwaysOnTop").checked = alwaysOnTop;
       document.getElementById("messageLimit").value = messageLimit;
+      if (token !== "") {
+        fetch("https://api.twitch.tv/helix/users", {
+          headers: {
+            Authorization: "Bearer " + token,
+            "Client-Id": CLIENT_ID,
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.data !== null) {
+              const user = data.data[0];
+              setUserName(user.login);
+              setUserId(user.id);
+            }
+          });
+      }
     }
-  }, [clearTabs, messageLimit, isLoading, smoothScroll, alwaysOnTop]);
+  }, [
+    clearTabs,
+    messageLimit,
+    isLoading,
+    smoothScroll,
+    alwaysOnTop,
+    token,
+    scope,
+  ]);
 
   const saveOptions = (e) => {
     e.target.animate(
@@ -101,6 +135,12 @@ const Options = () => {
     optionsContext.update();
   };
 
+  const logout = (e) => {
+    window.ipcRenderer.send("updateOption", "auth.token", "");
+    window.ipcRenderer.send("updateOption", "auth.scope", "");
+    optionsContext.update();
+  };
+
   return isLoading ? (
     <h1 className="options-loading">Loading...</h1>
   ) : (
@@ -111,7 +151,7 @@ const Options = () => {
       <div className="options-category">
         <h3 className="options-category-title">General</h3>
         <div className="options-input-container">
-          <h4 className="options-input-title w-1/2">Window alwyas on top</h4>
+          <h4 className="options-input-title w-1/2">Window always on top</h4>
           <div className="w-1/2 option-input">
             <label className="switch">
               <input
@@ -123,6 +163,34 @@ const Options = () => {
               <span className="slider round"></span>
             </label>
           </div>
+        </div>
+      </div>
+
+      {/* Authentication */}
+      <div className="options-category">
+        <h3 className="options-category-title">Authentication</h3>
+        <div className="options-input-container">
+          {token !== "" || scope !== "" ? (
+            <div className="w-full options-login-container">
+              <h4 className="options-input-title w-full">
+                Logged in as {userName}
+              </h4>
+              <div className="w-1/2 option-input">
+                <button onClick={logout} className="options-login-btn">
+                  Logout
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="w-full options-login-container">
+              <h4 className="options-input-title w-1/2">Login with twitch</h4>
+              <div className="w-1/2 option-input">
+                <Link to="/options/login" className="options-login-btn">
+                  Login
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

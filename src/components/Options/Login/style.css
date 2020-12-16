@@ -1,0 +1,13 @@
+.container {
+  padding: 0 1rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.options-login-title {
+  display: block;
+  width: 100%;
+  text-align: center;
+}

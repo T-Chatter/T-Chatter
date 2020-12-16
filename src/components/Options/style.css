@@ -12,7 +12,13 @@
   text-align: center;
 }
 
-.options-save-btn {
+.options-login-btn {
+  text-decoration: none;
+  text-align: center;
+}
+
+.options-save-btn,
+.options-login-btn {
   display: block;
   background-color: #a16bf5;
   padding: 0.75rem 2rem;
@@ -24,12 +30,14 @@
   font-weight: bold;
   width: 90%;
 }
-.options-save-btn:hover {
+.options-save-btn:hover,
+.options-login-btn:hover {
   padding: 0.75rem 2.25rem;
   background-color: #772ce8;
   width: 95%;
 }
-.options-save-btn:focus {
+.options-save-btn:focus,
+.options-login-btn:focus {
   outline: none;
 }
 .options-save-btn.saved {
@@ -41,17 +49,20 @@
   animation: animate-save ease-in 500ms;
 }
 
-.options-save-btn:disabled {
+.options-save-btn:disabled,
+.options-login-btn:disabled {
   cursor: not-allowed;
   background-color: #d45757;
 }
 
-.options-save-btn:disabled:hover {
+.options-save-btn:disabled:hover,
+.options-login-btn:disabled:hover {
   cursor: not-allowed;
   background-color: #9e4141;
 }
 
-.options-save-container {
+.options-save-container,
+.options-login-container {
   margin-top: 1.5rem;
   display: flex;
   justify-content: center;
@@ -222,11 +233,13 @@ input:checked + .slider:before {
     text-align: left;
   }
 
-  .options-save-btn {
+  .options-save-btn,
+  .options-login-btn {
     width: auto;
   }
 
-  .options-save-btn:hover {
+  .options-save-btn:hover,
+  .options-login-btn:hover {
     width: auto;
     padding: 0.75rem 2.25rem;
     background-color: #772ce8;
