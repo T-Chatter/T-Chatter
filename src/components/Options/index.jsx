@@ -4,9 +4,11 @@ import { OptionsContext } from "../../contexts/OptionsContext";
 import Container from "../Container";
 import { CLIENT_ID } from "../../constants";
 import "./style.css";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const Options = () => {
   const optionsContext = useContext(OptionsContext);
+  const authContext = useContext(AuthContext);
   let clearTabs = optionsContext.options?.tabs?.clearTabs;
   let messageLimit = optionsContext.options?.chat?.messages?.limit;
   let smoothScroll = optionsContext.options?.chat?.smoothScroll;
@@ -70,22 +72,6 @@ const Options = () => {
         token !== undefined ||
         scope !== undefined
       ) {
-        if (token !== "") {
-          fetch("https://api.twitch.tv/helix/users", {
-            headers: {
-              Authorization: "Bearer " + token,
-              "Client-Id": CLIENT_ID,
-            },
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              if (data.data !== null) {
-                const user = data.data[0];
-                setUserName(user.login);
-                setUserId(user.id);
-              }
-            });
-        }
         setIsLoading(!isLoading);
       }
     } else {
@@ -93,6 +79,22 @@ const Options = () => {
       document.getElementById("smoothScroll").checked = smoothScroll;
       document.getElementById("alwaysOnTop").checked = alwaysOnTop;
       document.getElementById("messageLimit").value = messageLimit;
+      if (token !== "") {
+        fetch("https://api.twitch.tv/helix/users", {
+          headers: {
+            Authorization: "Bearer " + token,
+            "Client-Id": CLIENT_ID,
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.data !== null) {
+              const user = data.data[0];
+              setUserName(user.login);
+              setUserId(user.id);
+            }
+          });
+      }
     }
   }, [
     clearTabs,
@@ -149,7 +151,7 @@ const Options = () => {
       <div className="options-category">
         <h3 className="options-category-title">General</h3>
         <div className="options-input-container">
-          <h4 className="options-input-title w-1/2">Window alwyas on top</h4>
+          <h4 className="options-input-title w-1/2">Window always on top</h4>
           <div className="w-1/2 option-input">
             <label className="switch">
               <input

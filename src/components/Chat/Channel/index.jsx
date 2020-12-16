@@ -12,10 +12,13 @@ import { updateTabsStorage } from "../../../App";
 import "./style.css";
 import parse from "html-react-parser";
 import { OptionsContext } from "../../../contexts/OptionsContext";
+import { AuthContext } from "../../../contexts/AuthContext";
+import { CLIENT_ID } from "../../../constants";
 
 const Channel = () => {
   const { removeTab, tabs } = useContext(TabsContext);
   const { options } = useContext(OptionsContext);
+  const authContext = useContext(AuthContext);
   const [channel, setChannel] = useState(
     window.location.hash.replace("#/chat/", "")
   );
@@ -32,9 +35,14 @@ const Channel = () => {
   const client = tmi.client({
     channels: [channel],
     options: {
-      clientId: "8amc2k0y3ipgrnjb3yd09inhb16n3e",
+      clientId: CLIENT_ID,
       debug: false,
     },
+    identity:
+      authContext?.username && authContext?.username !== ""
+        ? { username: authContext.username, password: authContext.token }
+        : null,
+    connection: { reconnect: false },
   });
 
   client.on("connected", () => {
@@ -43,65 +51,61 @@ const Channel = () => {
   });
 
   client.on("message", (channel, userState, message, self) => {
-    if (!self) {
-      const container = document.getElementById("messages-container");
-      // Make sure the visible messages does not exceed the limit
-      if (container.childNodes.length >= messageLimit) {
-        const firstChild = container.firstChild;
-        if (firstChild !== null) firstChild.remove();
-      }
-      // Make sure the visible messages does not exceed the limit
-      if (tab?.messages.length >= messageLimit) {
-        tab.messages.shift();
-      }
-
-      const date = new Date();
-
-      let emotesObj = userState.emotes;
-      if (emotesObj) {
-        message = insertEmotes(message, emotesObj);
-      }
-
-      bttvGlobalCached.current.forEach((x) => {
-        const match = message.includes(x.code);
-        if (match) {
-          message = insertBttvEmote(message, x.code, x.id);
-        }
-      });
-
-      bttvChannelCached.current.sharedEmotes.forEach((x) => {
-        const match = message.includes(x.code);
-        if (match) {
-          message = insertBttvEmote(message, x.code, x.id);
-        }
-      });
-
-      const msg = `${
-        showDate ? date.getHours() + ":" + date.getMinutes() + " " : ""
-      }<span style="color: ${
-        userState.color ?? "#1c82e7"
-      }; font-weight: bold; word-wrap: none;">${
-        userState.badges?.broadcaster ? "[B]&nbsp;" : ""
-      }${userState.mod ? "[M]&nbsp;" : ""}
-      ${userState.subscriber ? "[S]&nbsp;" : ""}${userState.username}</span>${
-        userState["message-type"] === "action"
-          ? "&nbsp;"
-          : "<span>:&nbsp;</span>"
-      }${message}`;
-
-      tab.messages.push(msg);
-
-      let msgEl = document.createElement("p");
-      msgEl.innerHTML = msg;
-      msgEl.classList.add("message");
-      if (userState["message-type"] === "action") {
-        msgEl.style.color = userState.color;
-      }
-
-      container.append(msgEl);
-      scrollToBottom();
-      updateTabsStorage(tabs);
+    const container = document.getElementById("messages-container");
+    // Make sure the visible messages does not exceed the limit
+    if (container.childNodes.length >= messageLimit) {
+      const firstChild = container.firstChild;
+      if (firstChild !== null) firstChild.remove();
     }
+    // Make sure the visible messages does not exceed the limit
+    if (tab?.messages.length >= messageLimit) {
+      tab.messages.shift();
+    }
+
+    const date = new Date();
+
+    let emotesObj = userState.emotes;
+    if (emotesObj) {
+      message = insertEmotes(message, emotesObj);
+    }
+
+    bttvGlobalCached.current.forEach((x) => {
+      const match = message.includes(x.code);
+      if (match) {
+        message = insertBttvEmote(message, x.code, x.id);
+      }
+    });
+
+    bttvChannelCached.current.sharedEmotes.forEach((x) => {
+      const match = message.includes(x.code);
+      if (match) {
+        message = insertBttvEmote(message, x.code, x.id);
+      }
+    });
+
+    const msg = `${
+      showDate ? date.getHours() + ":" + date.getMinutes() + " " : ""
+    }<span style="color: ${
+      userState.color ?? "#1c82e7"
+    }; font-weight: bold; word-wrap: none;">${
+      userState.badges?.broadcaster ? "[B]&nbsp;" : ""
+    }${userState.mod ? "[M]&nbsp;" : ""}
+      ${userState.subscriber ? "[S]&nbsp;" : ""}${userState.username}</span>${
+      userState["message-type"] === "action" ? "&nbsp;" : "<span>:&nbsp;</span>"
+    }${message}`;
+
+    tab.messages.push(msg);
+
+    let msgEl = document.createElement("p");
+    msgEl.innerHTML = msg;
+    msgEl.classList.add("message");
+    if (userState["message-type"] === "action") {
+      msgEl.style.color = userState.color;
+    }
+
+    container.append(msgEl);
+    scrollToBottom();
+    updateTabsStorage(tabs);
   });
 
   const insertBttvEmote = (message, code, id) => {
@@ -233,6 +237,29 @@ const Channel = () => {
     setChannel("");
   };
 
+  const sendMessage = (e) => {
+    const messageEl = document.getElementById("message");
+    const message = messageEl.innerHTML;
+    client
+      .say(channel, message)
+      .then()
+      .catch((err) => console.log(err));
+    messageEl.innerText = "";
+  };
+
+  const handleSend = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
+  const setPadding = () => {
+    document.getElementById("messages-container").style.paddingBottom =
+      document.getElementById("message").getBoundingClientRect().height + "px";
+    scrollToBottom();
+  };
+
   useEffect(() => {
     // BTTV Global
     fetch("https://api.betterttv.net/3/cached/emotes/global").then(
@@ -286,7 +313,7 @@ const Channel = () => {
 
   if (channel === "" || tab === null) return <Redirect to="/" />;
   return (
-    <div>
+    <>
       <h1 className="channel-title">{channel}</h1>
       <p className="channel-tip">
         Click the active tab for additional actions.
@@ -294,7 +321,7 @@ const Channel = () => {
       <button onClick={remove} className="channel-remove-btn">
         Remove channel
       </button>
-      <div id="messages-container">
+      <div id="messages-container" style={{ paddingBottom: "40px" }}>
         {tab?.messages?.map((m, i) => {
           return (
             <p key={i} className="message">
@@ -302,6 +329,34 @@ const Channel = () => {
             </p>
           );
         })}
+      </div>
+      <div className="messages-chat-container">
+        <span
+          class="textarea"
+          id="message"
+          role="textbox"
+          contentEditable={
+            authContext?.username && authContext?.username !== ""
+              ? "true"
+              : "false"
+          }
+          onKeyPress={handleSend}
+          onKeyDown={setPadding}
+          onKeyUp={setPadding}
+        >
+          {authContext?.username && authContext?.username !== ""
+            ? ""
+            : "Please login to send a message"}
+        </span>
+        <button
+          className="send-btn"
+          onClick={sendMessage}
+          disabled={
+            authContext?.username && authContext?.username !== "" ? false : true
+          }
+        >
+          Send
+        </button>
       </div>
       <div id="paused">
         <button className="paused-btn" onClick={unPause}>
@@ -311,7 +366,7 @@ const Channel = () => {
           <i class="fas fa-arrow-up"></i>
         </button>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Switch, Route, Redirect } from "react-router";
 import { TabsContext } from "../../contexts/TabsContext";
 import Channel from "./Channel";
+import "./style.css";
 
 const Chat = () => {
   const { tabs } = useContext(TabsContext);
