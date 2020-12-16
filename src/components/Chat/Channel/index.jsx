@@ -26,11 +26,13 @@ const Channel = () => {
   let isPaused = useRef(false);
   let isConnected = false;
   let showDate = false;
-  const messageLimit = options?.messages?.limit ?? 200;
-  const smoothScroll = options?.chat?.smoothScroll ?? true;
+  let messageLimit = useRef(options?.chat?.messages?.limit);
+  let smoothScroll = useRef(options?.chat?.smoothScroll);
   let bttvGlobalCached = useRef(null);
   let bttvChannelCached = useRef(null);
   let ffzGlobalCached = useRef(null);
+  let ffzChannelCached = useRef(null);
+  let loadedEmotes = useRef(false);
 
   const client = tmi.client({
     channels: [channel],
@@ -53,12 +55,12 @@ const Channel = () => {
   client.on("message", (channel, userState, message, self) => {
     const container = document.getElementById("messages-container");
     // Make sure the visible messages does not exceed the limit
-    if (container.childNodes.length >= messageLimit) {
+    while (container.childNodes.length >= messageLimit.current) {
       const firstChild = container.firstChild;
       if (firstChild !== null) firstChild.remove();
     }
     // Make sure the visible messages does not exceed the limit
-    if (tab?.messages.length >= messageLimit) {
+    while (tab?.messages.length >= messageLimit.current) {
       tab.messages.shift();
     }
 
@@ -82,6 +84,22 @@ const Channel = () => {
       const match = message.match(regex);
       if (match !== null && match.length > 0) {
         message = insertBttvEmote(message, x.code, x.id);
+      }
+    });
+
+    ffzGlobalCached.current.forEach((x) => {
+      const regex = new RegExp(`\\b${x.name}\\b`, "g");
+      const match = message.match(regex);
+      if (match !== null && match.length > 0) {
+        message = insertFfzEmote(message, x.name, x.id);
+      }
+    });
+
+    ffzChannelCached.current.forEach((x) => {
+      const regex = new RegExp(`\\b${x.name}\\b`, "g");
+      const match = message.match(regex);
+      if (match !== null && match.length > 0) {
+        message = insertFfzEmote(message, x.name, x.id);
       }
     });
 
@@ -123,6 +141,29 @@ const Channel = () => {
     stringReplacements.push({
       stringToReplace: stringToReplace,
       replacement: `<span class="tooltip tooltip-top" data-text="${stringToReplace}"><img src="https://cdn.betterttv.net/emote/${id}/1x" alt="${stringToReplace}" /></span>`,
+    });
+    const messageHTML = stringReplacements.reduce(
+      (acc, { stringToReplace, replacement }) => {
+        return acc.split(stringToReplace).join(replacement);
+      },
+      message
+    );
+    return messageHTML;
+  };
+
+  const insertFfzEmote = (message, code, id) => {
+    if (message === "" || !code) return;
+    const stringReplacements = [];
+    const start = message.indexOf(code);
+    const end = start + code.length;
+    const stringToReplace = message.substring(
+      parseInt(start, 10),
+      parseInt(end, 10) + 1
+    );
+
+    stringReplacements.push({
+      stringToReplace: stringToReplace,
+      replacement: `<span class="tooltip tooltip-top" data-text="${stringToReplace}"><img src="https://cdn.frankerfacez.com/emote/${id}/1" alt="${stringToReplace}" /></span>`,
     });
     const messageHTML = stringReplacements.reduce(
       (acc, { stringToReplace, replacement }) => {
@@ -265,21 +306,22 @@ const Channel = () => {
   };
 
   useEffect(() => {
-    // BTTV Global
-    fetch("https://api.betterttv.net/3/cached/emotes/global").then(
-      async (res) => {
-        bttvGlobalCached.current = await res.json();
-      }
-    );
-    // FFZ Global
-    // fetch("https://api.frankerfacez.com/v1/set/global").then(
-    //   async (res) => {
-    //     ffzGlobalCached.current = await res.json();
-    //   }
-    // );
-    // Get twitch id
-    fetch("https://api.frankerfacez.com/v1/user/giantwaffle").then(
-      async (res) => {
+    if (!loadedEmotes.current) {
+      // BTTV Global
+      fetch("https://api.betterttv.net/3/cached/emotes/global").then(
+        async (res) => {
+          bttvGlobalCached.current = await res.json();
+        }
+      );
+      // FFZ Global
+      fetch("https://api.frankerfacez.com/v1/set/global").then(async (resp) => {
+        const res = await resp.json();
+        ffzGlobalCached.current = res.sets["3"].emoticons;
+      });
+      // Get twitch id
+      fetch(
+        `https://api.frankerfacez.com/v1/user/${channel.toLowerCase()}`
+      ).then(async (res) => {
         const { user } = await res.json();
         // BTTV Channel
         fetch(
@@ -287,8 +329,33 @@ const Channel = () => {
         ).then(async (res) => {
           bttvChannelCached.current = await res.json();
         });
+        // FFZ Channel
+        fetch(`https://api.frankerfacez.com/v1/room/id/${user.twitch_id}`).then(
+          async (resp) => {
+            const res = await resp.json();
+            if (res.sets && Object.keys(res.sets).length > 0) {
+              ffzChannelCached.current =
+                res.sets[Object.keys(res.sets)[0]].emoticons;
+            }
+          }
+        );
+      });
+
+      const container = document.getElementById("messages-container");
+      while (container.childNodes.length > messageLimit.current) {
+        const firstChild = container.firstChild;
+        if (firstChild !== null) firstChild.remove();
       }
-    );
+      // Make sure the visible messages does not exceed the limit
+      while (tab?.messages.length > messageLimit.current) {
+        tab.messages.shift();
+      }
+
+      loadedEmotes.current = true;
+    }
+
+    messageLimit.current = options?.chat?.messages?.limit;
+    smoothScroll.current = options?.chat?.smoothScroll;
 
     if (!isConnected && client.readyState() !== "CONNECTING") {
       client.connect();
@@ -305,6 +372,10 @@ const Channel = () => {
       document.removeEventListener("keydown", handleKeydownPause, true);
       document.removeEventListener("keyup", handleKeyupPause, true);
       client.removeAllListeners();
+      bttvChannelCached.current = null;
+      bttvGlobalCached.current = null;
+      ffzChannelCached.current = null;
+      ffzGlobalCached.current = null;
     };
   }, [
     isConnected,
@@ -313,6 +384,12 @@ const Channel = () => {
     handleKeydownPause,
     handleKeyupPause,
     scrollToBottom,
+    channel,
+    messageLimit,
+    smoothScroll,
+    options,
+    loadedEmotes,
+    tab.messages,
   ]);
 
   if (channel === "" || tab === null) return <Redirect to="/" />;
