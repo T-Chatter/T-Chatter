@@ -96,12 +96,14 @@
   left: 0;
 }
 
-.messages-chat-container .textarea {
+.messages-chat-container .message-input {
   display: block;
   background-color: #121013;
+  color: #fff;
   width: 80%;
   overflow: auto;
   resize: none;
+  height: 20px;
   min-height: 20px;
   max-height: 25vh;
   line-height: 20px;
@@ -111,13 +113,13 @@
   transition: all 250ms ease-out;
 }
 
-.messages-chat-container .textarea:focus {
+.messages-chat-container .message-input:focus {
   background-color: #060407;
   border: #772ce8 solid 2px;
   outline: none;
 }
 
-.messages-chat-container .textarea[contentEditable="false"] {
+.messages-chat-container .message-input:disabled {
   border: #d45757 solid 2px;
 }
 
@@ -167,7 +169,7 @@
 }
 
 #messages-container::-webkit-scrollbar,
-.textarea::-webkit-scrollbar {
+.message-input::-webkit-scrollbar {
   background: #19161d;
   width: 10px;
   position: fixed;
@@ -176,14 +178,23 @@
 }
 
 #messages-container::-webkit-scrollbar-thumb,
-.textarea::-webkit-scrollbar-thumb {
+.message-input::-webkit-scrollbar-thumb {
   background: #88888811;
   border: solid 1px #88888822;
   border-radius: 10px;
 }
 
 #messages-container::-webkit-scrollbar-thumb:hover,
-.textarea::-webkit-scrollbar-thumb:hover {
+.message-input::-webkit-scrollbar-thumb:hover {
   background: #88888822;
   border: solid 1px #88888833;
+}
+
+#messages-container img {
+  margin: 0 0.25rem;
+}
+
+.tooltip::before {
+  font-size: 0.75rem;
+  text-align: center !important;
 }

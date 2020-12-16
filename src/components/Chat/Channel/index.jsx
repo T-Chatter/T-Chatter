@@ -70,15 +70,17 @@ const Channel = () => {
     }
 
     bttvGlobalCached.current.forEach((x) => {
-      const match = message.includes(x.code);
-      if (match) {
+      const regex = new RegExp(`\\b${x.code}\\b`, "g");
+      const match = message.match(regex);
+      if (match !== null && match.length > 0) {
         message = insertBttvEmote(message, x.code, x.id);
       }
     });
 
     bttvChannelCached.current.sharedEmotes.forEach((x) => {
-      const match = message.includes(x.code);
-      if (match) {
+      const regex = new RegExp(`\\b${x.code}\\b`, "g");
+      const match = message.match(regex);
+      if (match !== null && match.length > 0) {
         message = insertBttvEmote(message, x.code, x.id);
       }
     });
@@ -120,7 +122,7 @@ const Channel = () => {
 
     stringReplacements.push({
       stringToReplace: stringToReplace,
-      replacement: `<img src="https://cdn.betterttv.net/emote/${id}/1x" alt="${stringToReplace}" style="margin: 0 0.25rem">`,
+      replacement: `<span class="tooltip tooltip-top" data-text="${stringToReplace}"><img src="https://cdn.betterttv.net/emote/${id}/1x" alt="${stringToReplace}" /></span>`,
     });
     const messageHTML = stringReplacements.reduce(
       (acc, { stringToReplace, replacement }) => {
@@ -144,7 +146,7 @@ const Channel = () => {
 
       stringReplacements.push({
         stringToReplace: stringToReplace,
-        replacement: `<img src="https://static-cdn.jtvnw.net/emoticons/v1/${id}/1.0" alt="${stringToReplace}" style="margin: 0 0.25rem">`,
+        replacement: `<span class="tooltip tooltip-top" data-text="${stringToReplace}"><img src="https://static-cdn.jtvnw.net/emoticons/v1/${id}/1.0" alt="${stringToReplace}" class="tooltip tooltip-bottom" data-text="${stringToReplace}" /></span>`,
       });
     });
     const messageHTML = stringReplacements.reduce(
@@ -239,12 +241,14 @@ const Channel = () => {
 
   const sendMessage = (e) => {
     const messageEl = document.getElementById("message");
-    const message = messageEl.innerHTML;
-    client
-      .say(channel, message)
-      .then()
-      .catch((err) => console.log(err));
-    messageEl.innerText = "";
+    const message = messageEl.value;
+    if (message.trim() !== "") {
+      client
+        .say(channel, message)
+        .then()
+        .catch((err) => console.log(err));
+    }
+    messageEl.value = "";
   };
 
   const handleSend = (e) => {
@@ -331,23 +335,22 @@ const Channel = () => {
         })}
       </div>
       <div className="messages-chat-container">
-        <span
-          class="textarea"
+        <input
+          class="message-input"
+          type="text"
           id="message"
-          role="textbox"
-          contentEditable={
-            authContext?.username && authContext?.username !== ""
-              ? "true"
-              : "false"
+          disabled={
+            authContext?.username && authContext?.username !== "" ? false : true
           }
           onKeyPress={handleSend}
           onKeyDown={setPadding}
           onKeyUp={setPadding}
-        >
-          {authContext?.username && authContext?.username !== ""
-            ? ""
-            : "Please login to send a message"}
-        </span>
+          placeholder={
+            authContext?.username && authContext?.username !== ""
+              ? "Send a message"
+              : "Please login to send a message"
+          }
+        />
         <button
           className="send-btn"
           onClick={sendMessage}
