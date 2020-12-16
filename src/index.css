@@ -95,6 +95,17 @@ code {
   bottom: 0;
 }
 
+.tooltip.tooltip-top::before {
+  left: 50%;
+  top: 0;
+  margin: initial;
+
+  transform: translateY(-100%) translateX(-50%);
+  margin-top: -12px;
+
+  bottom: initial;
+}
+
 .tooltip::after {
   content: "";
   position: absolute;
@@ -128,6 +139,26 @@ code {
 
   border: 10px solid #333;
   border-color: transparent transparent #333 transparent;
+
+  display: none;
+
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.tooltip.tooltip-top::after {
+  content: "";
+  position: absolute;
+
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin-left: 0;
+
+  bottom: -100%;
+  margin-top: -5px;
+
+  border: 10px solid #333;
+  border-color: #333 transparent transparent transparent;
 
   display: none;
 
