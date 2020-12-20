@@ -1,7 +1,7 @@
 {
   "name": "t-chatter",
   "description": "A Twitch chat client.",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",

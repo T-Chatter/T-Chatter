@@ -19,10 +19,13 @@ const Follows = ({ addTab }) => {
     [addTab]
   );
 
-  const refreshFollows = (e) => {
-    setIsLoadingFollows(true);
-    authContext.update(authContext?.authUser?.token);
-  };
+  const refreshFollows = useCallback(
+    (e) => {
+      setIsLoadingFollows(true);
+      authContext.update(authContext?.authUser?.token);
+    },
+    [authContext]
+  );
 
   const mapFollowedChannels = useCallback(() => {
     let elements = [];
@@ -114,7 +117,11 @@ const Follows = ({ addTab }) => {
     if (!authContext.isLoading && isLoadingFollows) {
       fetchFollows();
     }
-  }, [fetchFollows, isLoadingFollows, authContext]);
+    const interval = setInterval(() => {
+      refreshFollows();
+    }, 5 * 1000 * 60);
+    return () => clearInterval(interval);
+  }, [fetchFollows, isLoadingFollows, authContext, refreshFollows]);
 
   if (isLoadingFollows) return <h1>Loading...</h1>;
   if (isNotLoggedIn)
