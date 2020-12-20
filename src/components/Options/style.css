@@ -69,6 +69,10 @@
   align-items: center;
 }
 
+.options-login-container {
+  flex-direction: column;
+}
+
 .options-input-container {
   display: flex;
   flex-direction: column;
@@ -261,6 +265,10 @@ input:checked + .slider:before {
     align-items: center;
     justify-content: space-around;
     margin: 0.5rem 1rem;
+  }
+
+  .options-login-container {
+    flex-direction: row;
   }
 
   .options-category-title {
