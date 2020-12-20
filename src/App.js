@@ -16,10 +16,15 @@ export const updateTabsStorage = (tabs) => {
 };
 
 function App() {
-  // const [inMemoryTabs, setInMemoryTabs] = useState([]);
   const [userTabs, setUserTabs] = useState([]);
   const [userOptions, setUserOptions] = useState(window.optionsSchema);
-  const [authUser, setAuthUser] = useState(null);
+  const [authUser, setAuthUser] = useState({
+    username: null,
+    userId: null,
+    token: null,
+    follows: null,
+  });
+  const [isLoadingAuthUser, setIsLoadingAuthUser] = useState(true);
 
   const addTab = (tab) => {
     const newTabs = [...userTabs, tab];
@@ -52,7 +57,13 @@ function App() {
   };
 
   const logout = () => {
-    setAuthUser(null);
+    setAuthUser({
+      username: null,
+      userId: null,
+      token: null,
+      follows: null,
+    });
+    setIsLoadingAuthUser(false);
   };
 
   window.ipcRenderer.on("clearTabs", () => {
@@ -60,7 +71,8 @@ function App() {
     setUserTabs([]);
   });
 
-  const updateAuthUser = (token) => {
+  const updateAuthUser = useCallback((token) => {
+    setIsLoadingAuthUser(true);
     fetch("https://api.twitch.tv/helix/users", {
       headers: {
         Authorization: "Bearer " + token,
@@ -71,14 +83,31 @@ function App() {
       .then((data) => {
         if (data.data !== null) {
           const user = data.data[0];
-          setAuthUser({
-            username: user.login,
-            userId: user.id,
-            token: token,
-          });
+          fetch(
+            "https://api.twitch.tv/helix/users/follows?from_id=" + user.id,
+            {
+              headers: {
+                Authorization: "Bearer " + token,
+                "Client-Id": CLIENT_ID,
+              },
+            }
+          )
+            .then((res) => res.json())
+            .then((res) => {
+              setAuthUser({
+                username: user.login,
+                userId: user.id,
+                token: token,
+                follows: res.data,
+              });
+              setIsLoadingAuthUser(false);
+            });
         }
+      })
+      .catch((res) => {
+        logout();
       });
-  };
+  }, []);
 
   useEffect(() => {
     const userTabs = JSON.parse(localStorage.getItem("userTabs"));
@@ -89,12 +118,19 @@ function App() {
       setUserOptions(opt);
       if (opt.auth.token !== "") {
         updateAuthUser(opt.auth.token);
-      }
+      } else logout();
     });
-  }, [setUserTabs]);
+  }, [setUserTabs, updateAuthUser]);
 
   return (
-    <AuthContext.Provider value={authUser}>
+    <AuthContext.Provider
+      value={{
+        authUser: authUser,
+        isLoading: isLoadingAuthUser,
+        update: updateAuthUser,
+        logout: logout,
+      }}
+    >
       <OptionsContext.Provider
         value={{
           save: saveOptions,

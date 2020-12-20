@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { Redirect } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { TabsContext } from "../../contexts/TabsContext";
+import Follows from "./Follows";
 
 import "./style.css";
 
@@ -29,6 +30,19 @@ const Home = () => {
     }
   };
 
+  const addWithName = (channel) => {
+    if (channel !== "") {
+      const tab = {
+        id: uuidv4(),
+        name: channel,
+        messages: [],
+      };
+      addTab(tab);
+      setChannel(channel);
+      setRedirect(true);
+    }
+  };
+
   if (redirect) return <Redirect to={`/chat/${channel}`} />;
   return (
     <div className="home-container">
@@ -44,6 +58,9 @@ const Home = () => {
         <button className="home-form-submit" onClick={add}>
           Add
         </button>
+      </div>
+      <div>
+        <Follows addTab={addWithName} />
       </div>
     </div>
   );
