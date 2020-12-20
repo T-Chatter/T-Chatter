@@ -75,7 +75,7 @@ const Channel = () => {
       message = insertEmotes(message, emotesObj);
     }
 
-    bttvGlobalCached.current.forEach((x) => {
+    bttvGlobalCached?.current?.forEach((x) => {
       const regex = new RegExp(`\\b${x.code}\\b`, "g");
       const match = message.match(regex);
       if (match !== null && match.length > 0) {
@@ -83,7 +83,7 @@ const Channel = () => {
       }
     });
 
-    bttvChannelCached.current.sharedEmotes.forEach((x) => {
+    bttvChannelCached?.current?.sharedEmotes?.forEach((x) => {
       const regex = new RegExp(`\\b${x.code}\\b`, "g");
       const match = message.match(regex);
       if (match !== null && match.length > 0) {
@@ -91,7 +91,7 @@ const Channel = () => {
       }
     });
 
-    ffzGlobalCached.current.forEach((x) => {
+    ffzGlobalCached?.current?.forEach((x) => {
       const regex = new RegExp(`\\b${x.name}\\b`, "g");
       const match = message.match(regex);
       if (match !== null && match.length > 0) {
@@ -99,7 +99,7 @@ const Channel = () => {
       }
     });
 
-    ffzChannelCached.current.forEach((x) => {
+    ffzChannelCached?.current?.forEach((x) => {
       const regex = new RegExp(`\\b${x.name}\\b`, "g");
       const match = message.match(regex);
       if (match !== null && match.length > 0) {

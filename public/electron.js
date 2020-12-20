@@ -13,6 +13,7 @@ const path = require("path");
 const { env } = require("process");
 const Store = require("electron-store");
 const express = require("express");
+const { autoUpdater } = require("electron-updater");
 
 const optionsDefaults = {
   options: {
@@ -92,6 +93,21 @@ function createWindow() {
       contextIsolation: false,
       nodeIntegration: true,
     },
+  });
+
+  window.once("ready-to-show", () => {
+    autoUpdater.checkForUpdatesAndNotify();
+  });
+
+  autoUpdater.autoDownload = false;
+  autoUpdater.autoInstallOnAppQuit = true;
+
+  autoUpdater.on("update-available", () => {
+    window.webContents.send("updateAvailable");
+  });
+
+  autoUpdater.on("update-downloaded", () => {
+    window.webContents.send("updateDownloaded");
   });
 
   window.on("closed", () => (window = null));
@@ -218,4 +234,36 @@ ipcMain.on("startLogin", (e, authUrl) => {
   authWindow.loadURL(authUrl);
   authWindow.show();
   authWindow.webContents.on("will-navigate", (e, newUrl) => {});
+});
+
+ipcMain.handle("getAppVersion", (e) => {
+  return app.getVersion();
+});
+
+ipcMain.handle("checkForUpdate", (e) => {
+  autoUpdater
+    .checkForUpdatesAndNotify()
+    .then((res) => {
+      return true;
+    })
+    .catch((res) => {
+      return false;
+    });
+  return false;
+});
+
+ipcMain.on("downloadUpdate", (e) => {
+  autoUpdater
+    .checkForUpdates()
+    .then((res) => {
+      // console.log(res.updateInfo);
+      autoUpdater.downloadUpdate(res.cancellationToken);
+    })
+    .catch((res) => {
+      console.log(res);
+    });
+});
+
+ipcMain.on("installUpdate", () => {
+  autoUpdater.quitAndInstall();
 });
