@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { OptionsContext } from "../../contexts/OptionsContext";
 import Container from "../Container";
-import { CLIENT_ID } from "../../constants";
 import "./style.css";
 import { AuthContext } from "../../contexts/AuthContext";
 
@@ -13,14 +12,9 @@ const Options = () => {
   let messageLimit = optionsContext.options?.chat?.messages?.limit;
   let smoothScroll = optionsContext.options?.chat?.smoothScroll;
   let alwaysOnTop = optionsContext.options?.general?.alwaysOnTop;
-  let token = optionsContext.options?.auth?.token;
-  let scope = optionsContext.options?.auth?.scope;
 
   const [isNotValid, setIsNotValid] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [messageLimitError, setMessageLimitError] = useState("");
-  const [userName, setUserName] = useState("");
-  const [userId, setUserId] = useState("");
 
   const onChange = (e) => {
     const btn = document.getElementById("save-btn");
@@ -64,47 +58,11 @@ const Options = () => {
   };
 
   useEffect(() => {
-    if (isLoading) {
-      if (
-        (clearTabs !== undefined && messageLimit !== undefined) ||
-        smoothScroll !== undefined ||
-        alwaysOnTop !== undefined ||
-        token !== undefined ||
-        scope !== undefined
-      ) {
-        setIsLoading(!isLoading);
-      }
-    } else {
-      document.getElementById("clearTabs").checked = clearTabs;
-      document.getElementById("smoothScroll").checked = smoothScroll;
-      document.getElementById("alwaysOnTop").checked = alwaysOnTop;
-      document.getElementById("messageLimit").value = messageLimit;
-      if (token !== "") {
-        fetch("https://api.twitch.tv/helix/users", {
-          headers: {
-            Authorization: "Bearer " + token,
-            "Client-Id": CLIENT_ID,
-          },
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.data !== null) {
-              const user = data.data[0];
-              setUserName(user.login);
-              setUserId(user.id);
-            }
-          });
-      }
-    }
-  }, [
-    clearTabs,
-    messageLimit,
-    isLoading,
-    smoothScroll,
-    alwaysOnTop,
-    token,
-    scope,
-  ]);
+    document.getElementById("clearTabs").checked = clearTabs;
+    document.getElementById("smoothScroll").checked = smoothScroll;
+    document.getElementById("alwaysOnTop").checked = alwaysOnTop;
+    document.getElementById("messageLimit").value = messageLimit;
+  }, [clearTabs, messageLimit, smoothScroll, alwaysOnTop]);
 
   const saveOptions = (e) => {
     e.target.animate(
@@ -141,9 +99,7 @@ const Options = () => {
     optionsContext.update();
   };
 
-  return isLoading ? (
-    <h1 className="options-loading">Loading...</h1>
-  ) : (
+  return (
     <Container>
       <h1 className="options-title">Options</h1>
 
@@ -170,10 +126,10 @@ const Options = () => {
       <div className="options-category">
         <h3 className="options-category-title">Authentication</h3>
         <div className="options-input-container">
-          {token !== "" || scope !== "" ? (
+          {(authContext?.authUser?.username ?? "") !== "" ? (
             <div className="w-full options-login-container">
               <h4 className="options-input-title w-full">
-                Logged in as {userName}
+                Logged in as {authContext.authUser.username}
               </h4>
               <div className="w-1/2 option-input">
                 <button onClick={logout} className="options-login-btn">

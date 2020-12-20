@@ -141,11 +141,11 @@
   outline: none;
 }
 
-.send-btn:disabled {
+.send-btn.disabled {
   background-color: #d45757;
 }
 
-.send-btn:disabled:hover {
+.send-btn.disabled:hover {
   background-color: #9e4141;
 }
 

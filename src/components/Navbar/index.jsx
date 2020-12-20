@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { TabsContext } from "../../contexts/TabsContext";
 import "./style.css";
 
 const Navbar = () => {
   const [isAdditionalOpen, setIsAdditionalOpen] = useState(false);
-  const [firstLoad, setFirstLoad] = useState(true);
 
   document.addEventListener(
     "wheel",
@@ -42,23 +41,6 @@ const Navbar = () => {
     });
     setIsAdditionalOpen(false);
   };
-
-  useEffect(() => {
-    if (firstLoad) {
-      console.log(
-        "This will run every 5 minutes. This will get state of channel (live or offline). " +
-          new Date().toLocaleTimeString()
-      );
-      setFirstLoad(false);
-    }
-    const interval = setInterval(() => {
-      console.log(
-        "This will run every 5 minutes. This will get state of channel (live or offline). " +
-          Date.now()
-      );
-    }, 5 * 1000 * 60);
-    return () => clearInterval(interval);
-  }, [firstLoad]);
 
   const openStream = (channel) => {
     window.shell.openExternal("https://twitch.com/" + channel);

@@ -217,7 +217,5 @@ ipcMain.on("startLogin", (e, authUrl) => {
   createAuthWindow();
   authWindow.loadURL(authUrl);
   authWindow.show();
-  authWindow.webContents.on("will-navigate", (e, newUrl) => {
-    console.log(newUrl);
-  });
+  authWindow.webContents.on("will-navigate", (e, newUrl) => {});
 });

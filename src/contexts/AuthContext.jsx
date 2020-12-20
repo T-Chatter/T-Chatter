@@ -1,7 +1,13 @@
 const React = require("react");
 
 export const AuthContext = React.createContext({
-  userId: "",
-  username: "",
-  token: "",
+  authUser: {
+    username: null,
+    userId: null,
+    token: null,
+    follows: null,
+  },
+  isLoading: true,
+  update: (token) => {},
+  logout: () => {},
 });

@@ -22,6 +22,7 @@ const Channel = () => {
   const [channel, setChannel] = useState(
     window.location.hash.replace("#/chat/", "")
   );
+  const [loginRedirect, setLoginRedirect] = useState(false);
   const tab = tabs.find((t) => t.name === channel);
   let isPaused = useRef(false);
   let isConnected = false;
@@ -41,8 +42,11 @@ const Channel = () => {
       debug: false,
     },
     identity:
-      authContext?.username && authContext?.username !== ""
-        ? { username: authContext.username, password: authContext.token }
+      authContext?.authUser?.username && authContext?.authUser?.username !== ""
+        ? {
+            username: authContext.authUser.username,
+            password: authContext.authUser.token,
+          }
         : null,
     connection: { reconnect: false },
   });
@@ -393,6 +397,7 @@ const Channel = () => {
   ]);
 
   if (channel === "" || tab === null) return <Redirect to="/" />;
+  if (loginRedirect) return <Redirect to="/options/login" />;
   return (
     <>
       <h1 className="channel-title">{channel}</h1>
@@ -417,26 +422,34 @@ const Channel = () => {
           type="text"
           id="message"
           disabled={
-            authContext?.username && authContext?.username !== "" ? false : true
+            authContext?.authUser?.username &&
+            authContext?.authUser?.username !== ""
+              ? false
+              : true
           }
           onKeyPress={handleSend}
           onKeyDown={setPadding}
           onKeyUp={setPadding}
           placeholder={
-            authContext?.username && authContext?.username !== ""
+            authContext?.authUser?.username &&
+            authContext?.authUser?.username !== ""
               ? "Send a message"
               : "Please login to send a message"
           }
         />
-        <button
-          className="send-btn"
-          onClick={sendMessage}
-          disabled={
-            authContext?.username && authContext?.username !== "" ? false : true
-          }
-        >
-          Send
-        </button>
+        {authContext?.authUser?.username &&
+        authContext?.authUser?.username !== "" ? (
+          <button className="send-btn" onClick={sendMessage}>
+            Send
+          </button>
+        ) : (
+          <button
+            className="send-btn disabled"
+            onClick={() => setLoginRedirect(true)}
+          >
+            Login
+          </button>
+        )}
       </div>
       <div id="paused">
         <button className="paused-btn" onClick={unPause}>
