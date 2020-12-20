@@ -204,7 +204,7 @@ const Channel = () => {
   };
 
   const scrollToBottom = useCallback(
-    (ignorePause = false, smooth = smoothScroll) => {
+    (ignorePause = false, smooth = smoothScroll.current) => {
       if (!isPaused.current || ignorePause) {
         window.scrollTo({
           behavior: smooth ? "smooth" : "auto",
@@ -216,7 +216,7 @@ const Channel = () => {
     [isPaused, smoothScroll]
   );
 
-  const scrollToTop = (e, smooth = smoothScroll) => {
+  const scrollToTop = (e, smooth = smoothScroll.current) => {
     if (isPaused.current) {
       window.scrollTo({
         behavior: smooth ? "smooth" : "auto",
