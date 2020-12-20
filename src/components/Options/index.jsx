@@ -15,6 +15,8 @@ const Options = () => {
 
   const [isNotValid, setIsNotValid] = useState(false);
   const [messageLimitError, setMessageLimitError] = useState("");
+  const [appVersion, setAppVersion] = useState(0);
+  const [updateMessage, setUpdateMessage] = useState(null);
 
   const onChange = (e) => {
     const btn = document.getElementById("save-btn");
@@ -62,6 +64,9 @@ const Options = () => {
     document.getElementById("smoothScroll").checked = smoothScroll;
     document.getElementById("alwaysOnTop").checked = alwaysOnTop;
     document.getElementById("messageLimit").value = messageLimit;
+    window.ipcRenderer
+      .invoke("getAppVersion")
+      .then((res) => setAppVersion(res));
   }, [clearTabs, messageLimit, smoothScroll, alwaysOnTop]);
 
   const saveOptions = (e) => {
@@ -97,6 +102,22 @@ const Options = () => {
     window.ipcRenderer.send("updateOption", "auth.token", "");
     window.ipcRenderer.send("updateOption", "auth.scope", "");
     optionsContext.update();
+  };
+
+  const checkForUpdate = (e) => {
+    setUpdateMessage(null);
+    window.ipcRenderer
+      .invoke("checkForUpdate")
+      .then((res) => {
+        if (!res) {
+          setUpdateMessage("None available");
+        } else {
+          setUpdateMessage("Update available");
+        }
+      })
+      .catch((res) => {
+        setUpdateMessage("None available");
+      });
   };
 
   return (
@@ -198,7 +219,7 @@ const Options = () => {
       </div>
 
       {/* Tab options */}
-      <div className="options-category last">
+      <div className="options-category">
         <h3 className="options-category-title">Tabs</h3>
         <div className="options-input-container">
           <h4 className="options-input-title w-1/2">Clear tabs on exit</h4>
@@ -216,6 +237,25 @@ const Options = () => {
         </div>
       </div>
 
+      {/* Update */}
+      <div className="options-category last">
+        <h3 className="options-category-title">Update</h3>
+        <div className="options-input-container">
+          <div className="w-full options-login-container">
+            <h4 className="options-input-title w-1/2">Check for update</h4>
+            <div className="w-1/2 option-input">
+              <button
+                to="/options/login"
+                className="options-login-btn"
+                onClick={checkForUpdate}
+              >
+                {updateMessage !== null ? updateMessage : "Check"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Save button */}
       <div className="w-full options-save-container">
         <button
@@ -228,6 +268,8 @@ const Options = () => {
           Save
         </button>
       </div>
+
+      <small>T-Chatter v{appVersion}</small>
     </Container>
   );
 };

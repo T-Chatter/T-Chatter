@@ -9,6 +9,8 @@ import { OptionsContext } from "./contexts/OptionsContext";
 import Login from "./components/Options/Login";
 import { AuthContext } from "./contexts/AuthContext";
 import { CLIENT_ID } from "./constants";
+import InstallUpdate from "./components/InstallUpdate";
+import Update from "./components/Update";
 // const ipcRenderer = require("electron").ipcRenderer;
 
 export const updateTabsStorage = (tabs) => {
@@ -25,6 +27,9 @@ function App() {
     follows: null,
   });
   const [isLoadingAuthUser, setIsLoadingAuthUser] = useState(true);
+  const [isUpdateAvailable, setIsUpdateAvailable] = useState(false);
+  const [isUpdateDownloaded, setIsUpdateDownloaded] = useState(false);
+  const [updateClosed, setUpdateClosed] = useState(false);
 
   const addTab = (tab) => {
     const newTabs = [...userTabs, tab];
@@ -69,6 +74,17 @@ function App() {
   window.ipcRenderer.on("clearTabs", () => {
     localStorage.setItem("userTabs", JSON.stringify([]));
     setUserTabs([]);
+  });
+
+  window.ipcRenderer.on("updateAvailable", () => {
+    setUpdateClosed(false);
+    setIsUpdateAvailable(true);
+  });
+
+  window.ipcRenderer.on("updateDownloaded", () => {
+    setUpdateClosed(false);
+    setIsUpdateAvailable(true);
+    setIsUpdateDownloaded(true);
   });
 
   const updateAuthUser = useCallback((token) => {
@@ -143,6 +159,13 @@ function App() {
         >
           <Router>
             <Navbar />
+            {isUpdateAvailable && !updateClosed ? (
+              isUpdateDownloaded ? (
+                <InstallUpdate isClosed={setUpdateClosed} />
+              ) : (
+                <Update isClosed={setUpdateClosed} />
+              )
+            ) : null}
             <main>
               <Switch>
                 <Route path="/" exact>
