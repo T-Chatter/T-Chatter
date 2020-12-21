@@ -16,6 +16,10 @@ I started this project as a project for me to learn electron / react so if the a
 
 You can download the installer <a href="https://t-chatter.github.io/" target="_blank">here</a> or go to the <a href="https://github.com/T-Chatter/T-Chatter/releases/latest" target="_blank">releases</a> page.
 
+## Changes
+
+The changelog is available [here](https://github.com/T-Chatter/T-Chatter/blob/master/CHANGELOG.md).
+
 ## Building the application yourself.
 
 ### Available Scripts (`root`)
