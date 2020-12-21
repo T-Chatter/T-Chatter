@@ -67,7 +67,7 @@ const store = new Store({
 let tray, window, authWindow;
 
 const platform = process.platform;
-const icon = path.join(__dirname, "../assets/tchatter-256x256.png");
+const icon = path.join(__dirname, "./assets/tchatter-256x256.png");
 const nIcon = nativeImage.createFromPath(icon);
 
 if (platform === "darwin") app.dock.hide();
@@ -89,9 +89,9 @@ function createWindow() {
       optionsDefaults.options.general.alwaysOnTop
     ),
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
-      contextIsolation: false,
       nodeIntegration: true,
+      preload: path.join(__dirname + "/preload.js"),
+      contextIsolation: false,
     },
   });
 
@@ -118,8 +118,8 @@ function createWindow() {
 
   // and load the index.html of the app.
   if (env.NODE_ENV === "development") {
-    // window.loadURL("http://localhost:3000/");
-    window.loadURL(`file://${path.join(__dirname, "../build/index.html")}`);
+    window.loadURL("http://localhost:3000/");
+    // window.loadURL(`file://${path.join(__dirname, "../build/index.html")}`);
     // Open the DevTools.
     window.webContents.openDevTools();
   } else {

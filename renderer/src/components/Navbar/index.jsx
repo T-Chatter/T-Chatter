@@ -1,12 +1,11 @@
 import React, { useState, useContext } from "react";
-import { NavLink, Redirect } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { TabsContext } from "../../contexts/TabsContext";
 import "./style.css";
 
 const Navbar = () => {
   const { removeTab } = useContext(TabsContext);
   const [isAdditionalOpen, setIsAdditionalOpen] = useState(false);
-  const [redirect, setRedirect] = useState(false);
 
   document.addEventListener(
     "wheel",
@@ -26,7 +25,11 @@ const Navbar = () => {
   );
 
   const displayAdditional = (e) => {
-    if (e.target.classList.contains("active") && !isAdditionalOpen) {
+    if (
+      e.target.classList.contains("active") &&
+      !e.target.classList.contains("ignore-additional") &&
+      !isAdditionalOpen
+    ) {
       const target = document.querySelector(
         `#${CSS.escape(e.target.id)}.navbar-additional`
       );
@@ -50,17 +53,15 @@ const Navbar = () => {
 
   const deleteTab = (channel) => {
     removeTab(channel);
-    setRedirect(true);
   };
 
-  // if (redirect) return <Redirect to="/" />;
   return (
     <>
       <div className="navbar-container" id="nav-main">
         <div className="navbar-nav">
           <NavLink
             to="/options"
-            className="navbar-link navbar-link-icon"
+            className="navbar-link navbar-link-icon ignore-additional"
             id="settings"
             activeClassName="active"
             onClick={displayAdditional}
@@ -71,7 +72,7 @@ const Navbar = () => {
         <div className="navbar-nav navbar-nav-secondary">
           <NavLink
             to="/"
-            className="navbar-link"
+            className="navbar-link ignore-additional"
             exact={true}
             activeClassName="active"
             onClick={displayAdditional}

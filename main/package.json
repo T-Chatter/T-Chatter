@@ -1,0 +1,67 @@
+{
+  "name": "t-chatter",
+  "description": "A Twitch chat client.",
+  "version": "0.3.8",
+  "private": true,
+  "license": "MIT",
+  "keywords": [
+    "electron",
+    "react",
+    "chat",
+    "twitch",
+    "client",
+    "cross-platform",
+    "desktop",
+    "app"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/T-Chatter/T-Chatter.git"
+  },
+  "author": {
+    "name": "Sebastian Vallin",
+    "url": "https://t-chatter.github.io/"
+  },
+  "main": "./src/main.js",
+  "build": {
+    "appId": "org.t-chatter",
+    "productName": "T-Chatter",
+    "copyright": "Copyright © 2020 Sebastian Vallin",
+    "artifactName": "${productName}-${version}.${ext}",
+    "mac": {
+      "category": "public.app-category.video"
+    },
+    "directories": {
+      "output": "packages",
+      "buildResources": "./src/assets"
+    },
+    "files": [
+      "package.json",
+      "build/**",
+      "src/**",
+      "assets/*.png"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "perMachine": true
+    }
+  },
+  "scripts": {
+    "electron": "cross-env NODE_ENV=development electron src/main.js",
+    "start": "nodemon --watch ./src/**/* --watch . --exec npm run electron",
+    "build": "cross-env NODE_ENV=production electron-builder --win --publish never",
+    "publish": "cross-env NODE_ENV=production electron-builder --win --publish always"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "electron": "11.1.0",
+    "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "electron-store": "^6.0.1",
+    "electron-updater": "^4.3.5",
+    "express": "^4.17.1"
+  }
+}

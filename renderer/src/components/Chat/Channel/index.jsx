@@ -144,7 +144,7 @@ const Channel = () => {
 
     stringReplacements.push({
       stringToReplace: stringToReplace,
-      replacement: `<span class="tooltip tooltip-top" data-text="${stringToReplace}"><img src="https://cdn.betterttv.net/emote/${id}/1x" alt="${stringToReplace}" /></span>`,
+      replacement: `<span className="tooltip tooltip-top" data-text="${stringToReplace}"><img src="https://cdn.betterttv.net/emote/${id}/1x" alt="${stringToReplace}" /></span>`,
     });
     const messageHTML = stringReplacements.reduce(
       (acc, { stringToReplace, replacement }) => {
@@ -167,7 +167,7 @@ const Channel = () => {
 
     stringReplacements.push({
       stringToReplace: stringToReplace,
-      replacement: `<span class="tooltip tooltip-top" data-text="${stringToReplace}"><img src="https://cdn.frankerfacez.com/emote/${id}/1" alt="${stringToReplace}" /></span>`,
+      replacement: `<span className="tooltip tooltip-top" data-text="${stringToReplace}"><img src="https://cdn.frankerfacez.com/emote/${id}/1" alt="${stringToReplace}" /></span>`,
     });
     const messageHTML = stringReplacements.reduce(
       (acc, { stringToReplace, replacement }) => {
@@ -191,7 +191,7 @@ const Channel = () => {
 
       stringReplacements.push({
         stringToReplace: stringToReplace,
-        replacement: `<span class="tooltip tooltip-top" data-text="${stringToReplace}"><img src="https://static-cdn.jtvnw.net/emoticons/v1/${id}/1.0" alt="${stringToReplace}" class="tooltip tooltip-bottom" data-text="${stringToReplace}" /></span>`,
+        replacement: `<span className="tooltip tooltip-top" data-text="${stringToReplace}"><img src="https://static-cdn.jtvnw.net/emoticons/v1/${id}/1.0" alt="${stringToReplace}" className="tooltip tooltip-bottom" data-text="${stringToReplace}" /></span>`,
       });
     });
     const messageHTML = stringReplacements.reduce(
@@ -334,20 +334,22 @@ const Channel = () => {
         const { user } = await res.json();
         // BTTV Channel
         fetch(
-          `https://api.betterttv.net/3/cached/users/twitch/${user.twitch_id}`
+          `https://api.betterttv.net/3/cached/users/twitch/${
+            user?.twitch_id ?? 0
+          }`
         ).then(async (res) => {
           bttvChannelCached.current = await res.json();
         });
         // FFZ Channel
-        fetch(`https://api.frankerfacez.com/v1/room/id/${user.twitch_id}`).then(
-          async (resp) => {
-            const res = await resp.json();
-            if (res.sets && Object.keys(res.sets).length > 0) {
-              ffzChannelCached.current =
-                res.sets[Object.keys(res.sets)[0]].emoticons;
-            }
+        fetch(
+          `https://api.frankerfacez.com/v1/room/id/${user?.twitch_id ?? 0}`
+        ).then(async (resp) => {
+          const res = await resp.json();
+          if (res.sets && Object.keys(res.sets).length > 0) {
+            ffzChannelCached.current =
+              res.sets[Object.keys(res.sets)[0]].emoticons;
           }
-        );
+        });
       });
 
       const container = document.getElementById("messages-container");
@@ -423,7 +425,7 @@ const Channel = () => {
       </div>
       <div className="messages-chat-container">
         <input
-          class="message-input"
+          className="message-input"
           type="text"
           id="message"
           disabled={
@@ -461,7 +463,7 @@ const Channel = () => {
           Chat Paused
         </button>
         <button className="scroll-top-btn" onClick={scrollToTop}>
-          <i class="fas fa-arrow-up"></i>
+          <i className="fas fa-arrow-up"></i>
         </button>
       </div>
     </>
