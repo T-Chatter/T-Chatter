@@ -71,22 +71,6 @@ function App() {
     setIsLoadingAuthUser(false);
   };
 
-  window.ipcRenderer.on("clearTabs", () => {
-    localStorage.setItem("userTabs", JSON.stringify([]));
-    setUserTabs([]);
-  });
-
-  window.ipcRenderer.on("updateAvailable", () => {
-    setUpdateClosed(false);
-    setIsUpdateAvailable(true);
-  });
-
-  window.ipcRenderer.on("updateDownloaded", () => {
-    setUpdateClosed(false);
-    setIsUpdateAvailable(true);
-    setIsUpdateDownloaded(true);
-  });
-
   const updateAuthUser = useCallback((token) => {
     setIsLoadingAuthUser(true);
     fetch("https://api.twitch.tv/helix/users", {
@@ -135,6 +119,22 @@ function App() {
       if (opt.auth.token !== "") {
         updateAuthUser(opt.auth.token);
       } else logout();
+    });
+
+    window.ipcRenderer.on("clearTabs", () => {
+      localStorage.setItem("userTabs", JSON.stringify([]));
+      setUserTabs([]);
+    });
+
+    window.ipcRenderer.on("updateAvailable", () => {
+      setUpdateClosed(false);
+      setIsUpdateAvailable(true);
+    });
+
+    window.ipcRenderer.on("updateDownloaded", () => {
+      setUpdateClosed(false);
+      setIsUpdateAvailable(true);
+      setIsUpdateDownloaded(true);
     });
   }, [setUserTabs, updateAuthUser]);
 

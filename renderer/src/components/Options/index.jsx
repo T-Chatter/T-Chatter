@@ -187,7 +187,7 @@ const Options = () => {
               className="tooltip tooltip-bottom options-tooltip"
               data-text="Default: 200. May cause performance issues if set too high."
             >
-              <i class="fas fa-question-circle"></i>
+              <i className="fas fa-question-circle"></i>
             </span>
           </h4>
           <div className="w-1/2 option-input">

@@ -60,7 +60,7 @@ const Login = () => {
   return (
     <Container>
       <h1 className="options-login-title">Login</h1>
-      <button onClick={handleLogin} class="options-login-btn">
+      <button onClick={handleLogin} className="options-login-btn">
         Start login
       </button>
     </Container>

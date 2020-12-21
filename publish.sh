@@ -7,4 +7,6 @@ if [ -z "$GH_TOKEN" ]; then
 fi
 
 # This will build, package and upload the app to GitHub.
+./build.sh
+cd ./main
 npm run publish
