@@ -18,35 +18,60 @@ You can download the installer <a href="https://t-chatter.github.io/" target="_b
 
 ## Building the application yourself.
 
-### Available Scripts
+### Available Scripts (`root`)
 
-In the project directory, you can run:
+In the projects root directory, you can run:
+
+### `start-dev.sh`
+
+Will run npm start concurrently in `main` & `renderer` directory.\
+You need to install [concurrently](https://www.npmjs.com/package/concurrently) globaly before running this.
+
+### `build.sh`
+
+Builds the react and electron projects to the `main/packages` folder.
+It will create an installer and also a \*-unpacked folder with the app unpacked.
+
+### `publish.sh`
+
+Will run build.sh and then create the release as a draft on github.\
+PAT is required to run this.
+
+### Available Scripts (`renderer`)
+
+In the `renderer` directory, you can run:
 
 ### `yarn start` / `npm start`
 
-Runs the app in the development mode.
-
-### `yarn watch` / `npm run watch`
-
-Will watch for changes in `src` directory and build when a change is detected.
+Runs the app in the development mode with hot reloading.
 
 ### `yarn test` / `npm run test`
 
 Launches the test runner in the interactive watch mode.
 
-### `yarn dist` / `npm run dist`
-
-Builds the react and electron projects to the `packages` folder.\
-It will create an installer and also a `*-unpacked` folder with the app unpacked.
-
-### `yarn build:react` / `npm run build:react`
+### `yarn build` / `npm run build`
 
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-### `yarn build` / `npm run build:electron`
+### Available Scripts (`main`)
 
-Builds the app without building the react project first to the `packages` folder.
+In the `main` directory, you can run:
+
+### `yarn start` / `npm run start`
+
+Runs the app in the development mode. Will also restart when a file change is detected.  
+Make sure to run the start script for react first.
+
+### `yarn electron` / `npm run electron`
+
+Runs the app in the development mode.\
+Make sure to run the start script for react first.
+
+### `yarn build` / `npm run build`
+
+Builds the electron projects to the `packages` folder.\
+It will create an installer and also a `*-unpacked` folder with the app unpacked.
 
 ## Contributing
 
