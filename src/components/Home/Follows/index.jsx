@@ -158,6 +158,9 @@ const Follows = ({ addTab }) => {
           <i className="fas fa-sync-alt"></i>
         </button>
       </h1>
+      <small className="follows-wip">
+        <i>WIP. Will only shows a limited amout of followed channels...</i>
+      </small>
       <div className="follows-container">
         <div>{followedChannels}</div>
       </div>

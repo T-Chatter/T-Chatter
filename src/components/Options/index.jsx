@@ -108,16 +108,8 @@ const Options = () => {
     setUpdateMessage(null);
     window.ipcRenderer
       .invoke("checkForUpdate")
-      .then((res) => {
-        if (!res) {
-          setUpdateMessage("None available");
-        } else {
-          setUpdateMessage("Update available");
-        }
-      })
-      .catch((res) => {
-        setUpdateMessage("None available");
-      });
+      .then((res) => {})
+      .catch((res) => {});
   };
 
   return (
@@ -269,7 +261,7 @@ const Options = () => {
         </button>
       </div>
 
-      <small>T-Chatter v{appVersion}</small>
+      <small className="options-version">T-Chatter v{appVersion}</small>
     </Container>
   );
 };

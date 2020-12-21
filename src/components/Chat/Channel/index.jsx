@@ -252,11 +252,16 @@ const Channel = () => {
         e.target.classList.contains("navbar-link-i")
       ) {
         return;
+      } else if (
+        window.innerHeight + window.scrollY >=
+        document.body.offsetHeight
+      ) {
+        unPause();
       } else if (e.deltaY < 0) {
         pause();
       }
     },
-    [pause]
+    [pause, unPause]
   );
 
   const handleKeydownPause = useCallback(
