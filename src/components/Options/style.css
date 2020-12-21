@@ -63,7 +63,7 @@
 
 .options-save-container,
 .options-login-container {
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -204,6 +204,11 @@ input:checked + .slider:before {
 }
 
 .options-category-title {
+  text-align: center;
+}
+
+.options-version {
+  margin-top: 1rem;
   text-align: center;
 }
 

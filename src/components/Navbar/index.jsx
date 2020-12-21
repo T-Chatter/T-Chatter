@@ -1,10 +1,12 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { NavLink, Redirect } from "react-router-dom";
 import { TabsContext } from "../../contexts/TabsContext";
 import "./style.css";
 
 const Navbar = () => {
+  const { removeTab } = useContext(TabsContext);
   const [isAdditionalOpen, setIsAdditionalOpen] = useState(false);
+  const [redirect, setRedirect] = useState(false);
 
   document.addEventListener(
     "wheel",
@@ -46,6 +48,12 @@ const Navbar = () => {
     window.shell.openExternal("https://twitch.com/" + channel);
   };
 
+  const deleteTab = (channel) => {
+    removeTab(channel);
+    setRedirect(true);
+  };
+
+  // if (redirect) return <Redirect to="/" />;
   return (
     <>
       <div className="navbar-container" id="nav-main">
@@ -106,6 +114,13 @@ const Navbar = () => {
                 >
                   <i className="fas fa-play"></i>
                   Open Stream
+                </button>
+                <button
+                  className="open-stream-btn"
+                  onClick={() => deleteTab(tab.name)}
+                >
+                  <i className="fas fa-ban"></i>
+                  Close Tab
                 </button>
               </div>
             );

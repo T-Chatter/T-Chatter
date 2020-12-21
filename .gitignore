@@ -26,5 +26,4 @@ yarn-error.log*
 .eslintcache
 
 electron-builder.yaml
-dev-app-update.yml
 .env
