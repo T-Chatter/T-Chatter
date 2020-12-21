@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.9] - 2020-12-21
+
 - Fixed tooltip not showing when hovering over an emote.
 
 ## [0.3.8] - 2020-12-21
@@ -71,12 +73,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Release v0.1.0
 
-[unreleased]: https://github.com/T-Chatter/T-Chatter/compare/v0.3.8...dev
+[unreleased]: https://github.com/T-Chatter/T-Chatter/compare/v0.3.9...dev
+[0.3.9]: https://github.com/T-Chatter/T-Chatter/compare/v0.3.8...v0.3.9
 [0.3.8]: https://github.com/T-Chatter/T-Chatter/compare/v0.3.7...v0.3.8
 [0.3.7]: https://github.com/T-Chatter/T-Chatter/compare/v0.3.6...v0.3.7
 [0.3.6]: https://github.com/T-Chatter/T-Chatter/compare/0.3.5...v0.3.6
 [0.3.5]: https://github.com/T-Chatter/T-Chatter/compare/0.3.4...0.3.5
 [0.3.4]: https://github.com/T-Chatter/T-Chatter/compare/0.3.2...0.3.4
+[0.3.3]: https://github.com/T-Chatter/T-Chatter/compare/0.3.2...0.3.4
 [0.3.2]: https://github.com/T-Chatter/T-Chatter/compare/0.3.1...0.3.2
 [0.3.1]: https://github.com/T-Chatter/T-Chatter/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/T-Chatter/T-Chatter/compare/0.2.3...0.3.0
