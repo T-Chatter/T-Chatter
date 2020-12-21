@@ -144,7 +144,7 @@ const Channel = () => {
 
     stringReplacements.push({
       stringToReplace: stringToReplace,
-      replacement: `<span className="tooltip tooltip-top" data-text="${stringToReplace}"><img src="https://cdn.betterttv.net/emote/${id}/1x" alt="${stringToReplace}" /></span>`,
+      replacement: `<span class="tooltip tooltip-top" data-text="${stringToReplace}"><img src="https://cdn.betterttv.net/emote/${id}/1x" alt="${stringToReplace}" /></span>`,
     });
     const messageHTML = stringReplacements.reduce(
       (acc, { stringToReplace, replacement }) => {
@@ -167,7 +167,7 @@ const Channel = () => {
 
     stringReplacements.push({
       stringToReplace: stringToReplace,
-      replacement: `<span className="tooltip tooltip-top" data-text="${stringToReplace}"><img src="https://cdn.frankerfacez.com/emote/${id}/1" alt="${stringToReplace}" /></span>`,
+      replacement: `<span class="tooltip tooltip-top" data-text="${stringToReplace}"><img src="https://cdn.frankerfacez.com/emote/${id}/1" alt="${stringToReplace}" /></span>`,
     });
     const messageHTML = stringReplacements.reduce(
       (acc, { stringToReplace, replacement }) => {
@@ -191,7 +191,7 @@ const Channel = () => {
 
       stringReplacements.push({
         stringToReplace: stringToReplace,
-        replacement: `<span className="tooltip tooltip-top" data-text="${stringToReplace}"><img src="https://static-cdn.jtvnw.net/emoticons/v1/${id}/1.0" alt="${stringToReplace}" className="tooltip tooltip-bottom" data-text="${stringToReplace}" /></span>`,
+        replacement: `<span class="tooltip tooltip-top" data-text="${stringToReplace}"><img src="https://static-cdn.jtvnw.net/emoticons/v1/${id}/1.0" alt="${stringToReplace}" class="tooltip tooltip-bottom" data-text="${stringToReplace}" /></span>`,
       });
     });
     const messageHTML = stringReplacements.reduce(

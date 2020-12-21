@@ -4,6 +4,20 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import { CLIENT_ID } from "../../../constants";
 import "./style.css";
 
+function stringToBoolean(string) {
+  switch (string.toLowerCase().trim()) {
+    case true:
+    case "true":
+    case 1:
+    case "1":
+    case "on":
+    case "yes":
+      return true;
+    default:
+      return false;
+  }
+}
+
 const Follows = ({ addTab }) => {
   const authContext = useContext(AuthContext);
   const [isLoadingFollows, setIsLoadingFollows] = useState(true);
@@ -41,8 +55,9 @@ const Follows = ({ addTab }) => {
       if (foundMatch)
         elements.push(
           <h4
+            key={follow.to_name}
             name={follow.to_name}
-            live={true}
+            live="true"
             viewer_count={follow.viewer_count}
           >
             <button
@@ -57,7 +72,12 @@ const Follows = ({ addTab }) => {
         );
       else
         elements.push(
-          <h4 name={follow.to_name} live={false} viewer_count={views}>
+          <h4
+            key={follow.to_name}
+            name={follow.to_name}
+            live="false"
+            viewer_count={views}
+          >
             <button
               id={follow.to_name}
               onClick={add}
@@ -70,7 +90,11 @@ const Follows = ({ addTab }) => {
         );
     });
 
-    elements = elements.sort((x, y) => x.props.live - y.props.live).reverse();
+    elements = elements
+      .sort(
+        (x, y) => stringToBoolean(x.props.live) - stringToBoolean(y.props.live)
+      )
+      .reverse();
     elements = elements.sort(
       (x, y) => x.props.viewer_count > y.props.viewer_count
     );
