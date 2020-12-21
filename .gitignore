@@ -27,3 +27,4 @@ yarn-error.log*
 
 electron-builder.yaml
 dev-app-update.yml
+.env
