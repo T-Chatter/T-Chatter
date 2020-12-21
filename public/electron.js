@@ -96,7 +96,11 @@ function createWindow() {
   });
 
   window.once("ready-to-show", () => {
-    autoUpdater.checkForUpdatesAndNotify();
+    if (env.NODE_ENV === "development") {
+      autoUpdater.checkForUpdates();
+    } else {
+      autoUpdater.checkForUpdatesAndNotify();
+    }
   });
 
   autoUpdater.autoDownload = false;
@@ -241,14 +245,25 @@ ipcMain.handle("getAppVersion", (e) => {
 });
 
 ipcMain.handle("checkForUpdate", (e) => {
-  autoUpdater
-    .checkForUpdatesAndNotify()
-    .then((res) => {
-      return true;
-    })
-    .catch((res) => {
-      return false;
-    });
+  if (env.NODE_ENV === "development") {
+    autoUpdater
+      .checkForUpdates()
+      .then((res) => {
+        return true;
+      })
+      .catch((res) => {
+        return false;
+      });
+  } else {
+    autoUpdater
+      .checkForUpdatesAndNotify()
+      .then((res) => {
+        return true;
+      })
+      .catch((res) => {
+        return false;
+      });
+  }
   return false;
 });
 
