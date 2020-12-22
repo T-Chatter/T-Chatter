@@ -53,6 +53,7 @@ code {
 }
 
 .tooltip::before {
+  z-index: 20;
   font-size: 1rem;
   content: attr(data-text);
   position: absolute;

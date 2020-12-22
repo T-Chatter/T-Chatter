@@ -36,7 +36,7 @@ const Channel = () => {
   let loadedEmotes = useRef(false);
 
   const client = tmi.client({
-    channels: [channel],
+    channels: [tab?.id === 0 ? channel.replace("Sync_", "") : channel],
     options: {
       clientId: CLIENT_ID,
       debug: false,
@@ -328,29 +328,31 @@ const Channel = () => {
         ffzGlobalCached.current = res.sets["3"].emoticons;
       });
       // Get twitch id
-      fetch(
-        `https://api.frankerfacez.com/v1/user/${channel.toLowerCase()}`
-      ).then(async (res) => {
-        const { user } = await res.json();
-        // BTTV Channel
-        fetch(
-          `https://api.betterttv.net/3/cached/users/twitch/${
-            user?.twitch_id ?? 0
-          }`
-        ).then(async (res) => {
-          bttvChannelCached.current = await res.json();
-        });
-        // FFZ Channel
-        fetch(
-          `https://api.frankerfacez.com/v1/room/id/${user?.twitch_id ?? 0}`
-        ).then(async (resp) => {
-          const res = await resp.json();
-          if (res.sets && Object.keys(res.sets).length > 0) {
-            ffzChannelCached.current =
-              res.sets[Object.keys(res.sets)[0]].emoticons;
-          }
-        });
-      });
+      let c = channel;
+      if (tab?.id === 0) c = channel.replace("Sync_", "");
+      fetch(`https://api.frankerfacez.com/v1/user/${c.toLowerCase()}`).then(
+        async (res) => {
+          const { user } = await res.json();
+          // BTTV Channel
+          fetch(
+            `https://api.betterttv.net/3/cached/users/twitch/${
+              user?.twitch_id ?? 0
+            }`
+          ).then(async (res) => {
+            bttvChannelCached.current = await res.json();
+          });
+          // FFZ Channel
+          fetch(
+            `https://api.frankerfacez.com/v1/room/id/${user?.twitch_id ?? 0}`
+          ).then(async (resp) => {
+            const res = await resp.json();
+            if (res.sets && Object.keys(res.sets).length > 0) {
+              ffzChannelCached.current =
+                res.sets[Object.keys(res.sets)[0]].emoticons;
+            }
+          });
+        }
+      );
 
       const container = document.getElementById("messages-container");
       while (container.childNodes.length > messageLimit.current) {
@@ -401,6 +403,7 @@ const Channel = () => {
     options,
     loadedEmotes,
     tab.messages,
+    tab.id,
   ]);
 
   if (channel === "" || tab === null) return <Redirect to="/" />;
@@ -411,6 +414,12 @@ const Channel = () => {
       <p className="channel-tip">
         Click the active tab for additional actions.
       </p>
+      {tab.id === 0 ? (
+        <p className="channel-tip">
+          Navigate to a channel in your browser to sync. <br />
+          Make sure you have the extension installed and enabled.
+        </p>
+      ) : null}
       <button onClick={remove} className="channel-remove-btn">
         Remove channel
       </button>

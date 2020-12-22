@@ -18,6 +18,7 @@
 }
 
 .options-save-btn,
+.options-reset-btn,
 .options-login-btn {
   display: block;
   background-color: #a16bf5;
@@ -31,12 +32,14 @@
   width: 90%;
 }
 .options-save-btn:hover,
+.options-reset-btn:hover,
 .options-login-btn:hover {
   padding: 0.75rem 2.25rem;
   background-color: #772ce8;
   width: 95%;
 }
 .options-save-btn:focus,
+.options-reset-btn:focus,
 .options-login-btn:focus {
   outline: none;
 }
@@ -61,12 +64,25 @@
   background-color: #9e4141;
 }
 
+.options-reset-btn {
+  background-color: #d45757;
+}
+
+.options-reset-btn:hover {
+  background-color: #9e4141 !important;
+}
+
 .options-save-container,
+.options-reset-container,
 .options-login-container {
   margin-top: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.options-reset-container {
+  margin-top: 2rem;
 }
 
 .options-login-container {
@@ -243,11 +259,13 @@ input:checked + .slider:before {
   }
 
   .options-save-btn,
+  .options-reset-btn,
   .options-login-btn {
     width: auto;
   }
 
   .options-save-btn:hover,
+  .options-reset-btn:hover,
   .options-login-btn:hover {
     width: auto;
     padding: 0.75rem 2.25rem;
