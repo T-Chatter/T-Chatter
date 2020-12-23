@@ -3,6 +3,7 @@
 T-Chatter is a twitch chat client build with Electron and React.
 
 - Website <a href="https://t-chatter.github.io/" target="_blank">https://t-chatter.github.io/</a>
+- <a href="https://t-chatter.github.io/" target="_blank">T-Chatter Browser Sync</a> chrome extension.
 
 <div>
   <img src="https://t-chatter.github.io/assets/T-Chatter_1.jpg" alt="T-Chatter logo" height="400" style="display: inline;" />
