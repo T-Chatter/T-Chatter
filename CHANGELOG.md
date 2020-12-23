@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Fixed issue with Sync tab not sending messages.
+
 ## [0.3.10] - 2020-12-23
 
 - Added support for the new T-Chatter Browser Sync extension.

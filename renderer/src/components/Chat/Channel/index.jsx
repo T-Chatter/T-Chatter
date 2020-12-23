@@ -293,8 +293,10 @@ const Channel = () => {
     const messageEl = document.getElementById("message");
     const message = messageEl.value;
     if (message.trim() !== "") {
+      let c = channel;
+      if (tab?.id === 0) c = channel.replace("Sync_", "");
       client
-        .say(channel, message)
+        .say(c, message)
         .then()
         .catch((err) => console.log(err));
     }
