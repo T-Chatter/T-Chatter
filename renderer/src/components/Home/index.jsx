@@ -2,12 +2,14 @@ import React, { useContext, useState } from "react";
 import { Redirect } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { TabsContext } from "../../contexts/TabsContext";
+import { OptionsContext } from "../../contexts/OptionsContext";
 import Follows from "./Follows";
 
 import "./style.css";
 
 const Home = () => {
-  const { addTab } = useContext(TabsContext);
+  const { addTab, tabs } = useContext(TabsContext);
+  const optionsContext = useContext(OptionsContext);
   const [redirect, setRedirect] = useState(false);
 
   const [channel, setChannel] = useState("");
@@ -43,6 +45,23 @@ const Home = () => {
     }
   };
 
+  const addSync = () => {
+    const syncTab = tabs.find((t) => t.id === 0);
+    if (syncTab) {
+      setChannel(syncTab.name);
+      setRedirect(true);
+    } else {
+      const tab = {
+        id: 0,
+        name: "Sync_",
+        messages: [],
+      };
+      addTab(tab);
+      setChannel("Sync_");
+      setRedirect(true);
+    }
+  };
+
   if (redirect) return <Redirect to={`/chat/${channel}`} />;
   return (
     <div className="home-container">
@@ -58,6 +77,18 @@ const Home = () => {
         <button className="home-form-submit" onClick={add}>
           Add
         </button>
+        <br />
+        {optionsContext?.options?.chat?.browserSync ? (
+          <button className="home-form-submit" onClick={addSync}>
+            Sync Tab
+            <span
+              className="tooltip tooltip-top sync-tab-tip"
+              data-text="Adds a Browser Sync tab that will sync the channel to the current channel in the browser. Requires T-Chatter Browser Sync extension."
+            >
+              <i className="fas fa-question-circle"></i>
+            </span>
+          </button>
+        ) : null}
       </div>
       <div>
         <Follows addTab={addWithName} />

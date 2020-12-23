@@ -10,6 +10,7 @@ window.optionsSchema = {
         limit: 200,
       },
       smoothScroll: true,
+      browserSync: false,
     },
     general: {
       allwaysOnTop: false,

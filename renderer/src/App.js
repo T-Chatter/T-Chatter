@@ -11,6 +11,7 @@ import { AuthContext } from "./contexts/AuthContext";
 import { CLIENT_ID } from "./constants";
 import InstallUpdate from "./components/InstallUpdate";
 import Update from "./components/Update";
+import BrowserSync from "./components/BrowserSync";
 // const ipcRenderer = require("electron").ipcRenderer;
 
 export const updateTabsStorage = (tabs) => {
@@ -39,6 +40,16 @@ function App() {
 
   const removeTab = (name) => {
     let tabIndex = userTabs.findIndex((t) => t.name === name);
+    if (tabIndex !== -1) {
+      let newArr = userTabs;
+      newArr.splice(tabIndex, 1);
+      setUserTabs([...newArr]);
+      updateTabsStorage(newArr);
+    }
+  };
+
+  const removeTabById = (id) => {
+    let tabIndex = userTabs.findIndex((t) => t.id === id);
     if (tabIndex !== -1) {
       let newArr = userTabs;
       newArr.splice(tabIndex, 1);
@@ -155,7 +166,12 @@ function App() {
         }}
       >
         <TabsContext.Provider
-          value={{ tabs: userTabs, addTab: addTab, removeTab: removeTab }}
+          value={{
+            tabs: userTabs,
+            addTab: addTab,
+            removeTab: removeTab,
+            removeTabById: removeTabById,
+          }}
         >
           <Router>
             <Navbar />
@@ -167,6 +183,7 @@ function App() {
               )
             ) : null}
             <main>
+              <BrowserSync />
               <Switch>
                 <Route path="/" exact>
                   <Home />

@@ -54,3 +54,7 @@
   border: none;
   outline: none;
 }
+
+.sync-tab-tip {
+  margin-left: 0.5rem;
+}

@@ -1,7 +1,7 @@
 {
   "name": "t-chatter",
   "description": "A Twitch chat client.",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "private": true,
   "license": "MIT",
   "keywords": [
@@ -60,6 +60,7 @@
     "nodemon": "^2.0.6"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "electron-store": "^6.0.1",
     "electron-updater": "^4.3.5",
     "express": "^4.17.1"

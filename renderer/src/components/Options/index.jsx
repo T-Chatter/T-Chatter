@@ -4,12 +4,15 @@ import { OptionsContext } from "../../contexts/OptionsContext";
 import Container from "../Container";
 import "./style.css";
 import { AuthContext } from "../../contexts/AuthContext";
+import { TabsContext } from "../../contexts/TabsContext";
 
 const Options = () => {
   const optionsContext = useContext(OptionsContext);
+  const tabsContext = useContext(TabsContext);
   const authContext = useContext(AuthContext);
   let clearTabs = optionsContext.options?.tabs?.clearTabs;
-  let messageLimit = optionsContext.options?.chat?.messages?.limit;
+  let messageLimit = optionsContext.options?.chat?.messages?.limit?.toString();
+  let browserSync = optionsContext.options?.chat?.browserSync;
   let smoothScroll = optionsContext.options?.chat?.smoothScroll;
   let alwaysOnTop = optionsContext.options?.general?.alwaysOnTop;
 
@@ -36,6 +39,9 @@ const Options = () => {
           break;
         case "alwaysOnTop":
           alwaysOnTop = checked;
+          break;
+        case "browserSync":
+          browserSync = checked;
           break;
         default:
           break;
@@ -64,10 +70,11 @@ const Options = () => {
     document.getElementById("smoothScroll").checked = smoothScroll;
     document.getElementById("alwaysOnTop").checked = alwaysOnTop;
     document.getElementById("messageLimit").value = messageLimit;
+    document.getElementById("browserSync").value = browserSync;
     window.ipcRenderer
       .invoke("getAppVersion")
       .then((res) => setAppVersion(res));
-  }, [clearTabs, messageLimit, smoothScroll, alwaysOnTop]);
+  }, [clearTabs, messageLimit, smoothScroll, alwaysOnTop, browserSync]);
 
   const saveOptions = (e) => {
     e.target.animate(
@@ -87,6 +94,9 @@ const Options = () => {
     const btn = document.getElementById("save-btn");
     btn.innerText = "Saved!";
     btn.classList.add("saved");
+
+    if (!browserSync) tabsContext.removeTabById(0);
+
     window.ipcRenderer.send("updateOption", "tabs.clearTabs", clearTabs);
     window.ipcRenderer.send(
       "updateOption",
@@ -95,6 +105,12 @@ const Options = () => {
     );
     window.ipcRenderer.send("updateOption", "chat.smoothScroll", smoothScroll);
     window.ipcRenderer.send("updateOption", "general.alwaysOnTop", alwaysOnTop);
+    window.ipcRenderer.send("updateOption", "chat.browserSync", browserSync);
+    optionsContext.update();
+  };
+
+  const resetOptions = () => {
+    window.ipcRenderer.send("resetOptions");
     optionsContext.update();
   };
 
@@ -167,20 +183,6 @@ const Options = () => {
       <div className="options-category">
         <h3 className="options-category-title">Chat</h3>
         <div className="options-input-container">
-          <h4 className="options-input-title w-1/2">Smooth scroll</h4>
-          <div className="w-1/2 option-input">
-            <label className="switch">
-              <input
-                type="checkbox"
-                id="smoothScroll"
-                onChange={onChange}
-                defaultChecked={smoothScroll}
-              />
-              <span className="slider round"></span>
-            </label>
-          </div>
-        </div>
-        <div className="options-input-container">
           <h4 className="options-input-title w-1/2">
             Message limit
             <span
@@ -206,6 +208,42 @@ const Options = () => {
             >
               {messageLimitError}
             </p>
+          </div>
+        </div>
+        <div className="options-input-container">
+          <h4 className="options-input-title w-1/2">Smooth scroll</h4>
+          <div className="w-1/2 option-input">
+            <label className="switch">
+              <input
+                type="checkbox"
+                id="smoothScroll"
+                onChange={onChange}
+                defaultChecked={smoothScroll}
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
+        </div>
+        <div className="options-input-container">
+          <h4 className="options-input-title w-1/2">
+            Browser Sync
+            <span
+              className="tooltip tooltip-bottom options-tooltip"
+              data-text="Will sync the current channel in the browser with the active tab. Reqiures the T-Chatter Browser Sync extension."
+            >
+              <i className="fas fa-question-circle"></i>
+            </span>
+          </h4>
+          <div className="w-1/2 option-input">
+            <label className="switch">
+              <input
+                type="checkbox"
+                id="browserSync"
+                onChange={onChange}
+                defaultChecked={browserSync}
+              />
+              <span className="slider round"></span>
+            </label>
           </div>
         </div>
       </div>
@@ -258,6 +296,16 @@ const Options = () => {
           disabled={isNotValid}
         >
           Save
+        </button>
+      </div>
+      <div className="w-full options-reset-container">
+        <button
+          type="button"
+          onClick={resetOptions}
+          className="options-reset-btn"
+          id="reset-btn"
+        >
+          Reset
         </button>
       </div>
 

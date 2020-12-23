@@ -14,6 +14,7 @@ const { env } = require("process");
 const Store = require("electron-store");
 const express = require("express");
 const { autoUpdater } = require("electron-updater");
+const cors = require("cors");
 
 const optionsDefaults = {
   options: {
@@ -25,6 +26,7 @@ const optionsDefaults = {
         limit: 200,
       },
       smoothScroll: true,
+      browserSync: false,
     },
     general: {
       alwaysOnTop: false,
@@ -60,6 +62,9 @@ const store = new Store({
     "0.3.0": (store) => {
       store.set("options.auth.token", "");
       store.set("options.auth.scope", "");
+    },
+    "0.3.10": (store) => {
+      store.set("options.chat.browserSync", false);
     },
   },
 });
@@ -131,6 +136,10 @@ function createWindow() {
 const localhostServer = express();
 const port = 6749;
 
+const browserSyncServer = express();
+browserSyncServer.use(cors());
+const browserSyncPort = 6748;
+
 localhostServer.get("/token", (req, res) => {
   res.sendFile(path.join(__dirname + "/token/token.html"));
 });
@@ -157,12 +166,39 @@ function createAuthWindow() {
   });
 }
 
+let browserSyncServerInstance;
+
+browserSyncServer.get("/", (req, res) => {
+  window.webContents.send("updateActiveChannel", req.query.channel);
+  res.status(200).send({ channel: req.query.channel });
+});
+
+function browserSync(isEnabled) {
+  if (isEnabled) {
+    if (!browserSyncServerInstance?.listening) {
+      browserSyncServerInstance = browserSyncServer.listen(
+        browserSyncPort,
+        () => console.log("Listening for browserSync requests.")
+      );
+    }
+  } else if (browserSyncServerInstance !== undefined) {
+    browserSyncServerInstance.close();
+    browserSyncServerInstance = undefined;
+  }
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createTray();
   createWindow();
+
+  const browserSyncEnabled = store.get(
+    "options.chat.browserSync",
+    optionsDefaults.options.chat.browserSync
+  );
+  browserSync(browserSyncEnabled);
 
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
@@ -224,8 +260,15 @@ app.on("will-quit", (e) => {
 
 ipcMain.on("updateOption", (e, key, value) => {
   store.set(`options.${key}`, value);
-  if (key === "general.alwaysOnTop") {
-    window.setAlwaysOnTop(value);
+  switch (key) {
+    case "general.alwaysOnTop":
+      window.setAlwaysOnTop(value);
+      break;
+    case "chat.browserSync":
+      browserSync(value);
+      break;
+    default:
+      break;
   }
 });
 
@@ -281,4 +324,9 @@ ipcMain.on("downloadUpdate", (e) => {
 
 ipcMain.on("installUpdate", () => {
   autoUpdater.quitAndInstall();
+});
+
+ipcMain.on("resetOptions", (e) => {
+  store.reset("options");
+  console.log("Reset");
 });
