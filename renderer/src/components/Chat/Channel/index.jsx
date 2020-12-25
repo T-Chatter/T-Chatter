@@ -7,8 +7,7 @@ import React, {
 } from "react";
 import { Redirect } from "react-router";
 import tmi from "tmi.js";
-import { TabsContext } from "../../../contexts/TabsContext";
-import { updateTabsStorage } from "../../../App";
+import { TabsContext } from "../../../contexts/Tabs/tabs.context";
 import "./style.css";
 import parse from "html-react-parser";
 import { OptionsContext } from "../../../contexts/OptionsContext";
@@ -16,7 +15,7 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import { CLIENT_ID } from "../../../constants";
 
 const Channel = () => {
-  const { removeTab, tabs } = useContext(TabsContext);
+  const { removeTab, tabs, updateLocalStorage } = useContext(TabsContext);
   const { options } = useContext(OptionsContext);
   const authContext = useContext(AuthContext);
   const [channel, setChannel] = useState(
@@ -129,7 +128,7 @@ const Channel = () => {
 
     container.append(msgEl);
     scrollToBottom();
-    updateTabsStorage(tabs);
+    updateLocalStorage(tabs);
   });
 
   const insertBttvEmote = (message, code, id) => {

@@ -5,4 +5,5 @@ export const TabsContext = React.createContext({
   addTab: (tab) => {},
   removeTab: (name) => {},
   removeTabById: (id) => {},
+  updateLocalStorage: (tabs) => {},
 });

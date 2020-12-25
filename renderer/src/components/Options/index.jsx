@@ -4,7 +4,7 @@ import { OptionsContext } from "../../contexts/OptionsContext";
 import Container from "../Container";
 import "./style.css";
 import { AuthContext } from "../../contexts/AuthContext";
-import { TabsContext } from "../../contexts/TabsContext";
+import { TabsContext } from "../../contexts/Tabs/tabs.context";
 
 const Options = () => {
   const optionsContext = useContext(OptionsContext);

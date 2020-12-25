@@ -1,7 +1,7 @@
 import Home from "./components/Home";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import { TabsContext } from "./contexts/TabsContext";
+import TabsState from "./contexts/Tabs/TabsState";
 import Chat from "./components/Chat";
 import { useState, useEffect, useCallback } from "react";
 import Options from "./components/Options";
@@ -14,12 +14,7 @@ import Update from "./components/Update";
 import BrowserSync from "./components/BrowserSync";
 // const ipcRenderer = require("electron").ipcRenderer;
 
-export const updateTabsStorage = (tabs) => {
-  localStorage.setItem("userTabs", JSON.stringify(tabs));
-};
-
 function App() {
-  const [userTabs, setUserTabs] = useState([]);
   const [userOptions, setUserOptions] = useState(window.optionsSchema);
   const [authUser, setAuthUser] = useState({
     username: null,
@@ -31,32 +26,6 @@ function App() {
   const [isUpdateAvailable, setIsUpdateAvailable] = useState(false);
   const [isUpdateDownloaded, setIsUpdateDownloaded] = useState(false);
   const [updateClosed, setUpdateClosed] = useState(false);
-
-  const addTab = (tab) => {
-    const newTabs = [...userTabs, tab];
-    setUserTabs(newTabs);
-    updateTabsStorage(newTabs);
-  };
-
-  const removeTab = (name) => {
-    let tabIndex = userTabs.findIndex((t) => t.name === name);
-    if (tabIndex !== -1) {
-      let newArr = userTabs;
-      newArr.splice(tabIndex, 1);
-      setUserTabs([...newArr]);
-      updateTabsStorage(newArr);
-    }
-  };
-
-  const removeTabById = (id) => {
-    let tabIndex = userTabs.findIndex((t) => t.id === id);
-    if (tabIndex !== -1) {
-      let newArr = userTabs;
-      newArr.splice(tabIndex, 1);
-      setUserTabs([...newArr]);
-      updateTabsStorage(newArr);
-    }
-  };
 
   const saveOptions = (newOptions) => {
     setUserOptions(newOptions);
@@ -121,20 +90,11 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const userTabs = JSON.parse(localStorage.getItem("userTabs"));
-    if (userTabs) {
-      setUserTabs(userTabs);
-    }
     window.ipcRenderer.invoke("getOptions").then((opt) => {
       setUserOptions(opt);
       if (opt.auth.token !== "") {
         updateAuthUser(opt.auth.token);
       } else logout();
-    });
-
-    window.ipcRenderer.on("clearTabs", () => {
-      localStorage.setItem("userTabs", JSON.stringify([]));
-      setUserTabs([]);
     });
 
     window.ipcRenderer.on("updateAvailable", () => {
@@ -147,7 +107,7 @@ function App() {
       setIsUpdateAvailable(true);
       setIsUpdateDownloaded(true);
     });
-  }, [setUserTabs, updateAuthUser]);
+  }, [updateAuthUser]);
 
   return (
     <AuthContext.Provider
@@ -165,14 +125,7 @@ function App() {
           options: userOptions,
         }}
       >
-        <TabsContext.Provider
-          value={{
-            tabs: userTabs,
-            addTab: addTab,
-            removeTab: removeTab,
-            removeTabById: removeTabById,
-          }}
-        >
+        <TabsState>
           <Router>
             <Navbar />
             {isUpdateAvailable && !updateClosed ? (
@@ -203,7 +156,7 @@ function App() {
               </Switch>
             </main>
           </Router>
-        </TabsContext.Provider>
+        </TabsState>
       </OptionsContext.Provider>
     </AuthContext.Provider>
   );

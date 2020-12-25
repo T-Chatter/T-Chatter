@@ -1,5 +1,5 @@
 import React, { useContext, useCallback, useEffect, useState } from "react";
-import { TabsContext } from "../../contexts/TabsContext";
+import { TabsContext } from "../../contexts/Tabs/tabs.context";
 import { OptionsContext } from "../../contexts/OptionsContext";
 import { Redirect } from "react-router-dom";
 
