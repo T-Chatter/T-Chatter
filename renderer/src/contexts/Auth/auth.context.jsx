@@ -8,6 +8,6 @@ export const AuthContext = React.createContext({
     follows: null,
   },
   isLoading: true,
-  update: (token) => {},
+  updateAuthUser: (token) => {},
   logout: () => {},
 });

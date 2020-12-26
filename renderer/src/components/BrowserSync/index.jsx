@@ -1,6 +1,6 @@
 import React, { useContext, useCallback, useEffect, useState } from "react";
-import { TabsContext } from "../../contexts/TabsContext";
-import { OptionsContext } from "../../contexts/OptionsContext";
+import { TabsContext } from "../../contexts/Tabs/tabs.context";
+import { OptionsContext } from "../../contexts/Options/options.context";
 import { Redirect } from "react-router-dom";
 
 const BrowserSync = () => {
