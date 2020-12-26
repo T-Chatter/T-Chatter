@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 - Fixed issue with Sync tab not sending messages.
+- Various improvements and fixes.
 
 ## [0.3.10] - 2020-12-23
 
