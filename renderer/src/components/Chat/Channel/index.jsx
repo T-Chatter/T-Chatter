@@ -10,8 +10,8 @@ import tmi from "tmi.js";
 import { TabsContext } from "../../../contexts/Tabs/tabs.context";
 import "./style.css";
 import parse from "html-react-parser";
-import { OptionsContext } from "../../../contexts/OptionsContext";
-import { AuthContext } from "../../../contexts/AuthContext";
+import { OptionsContext } from "../../../contexts/Options/options.context";
+import { AuthContext } from "../../../contexts/Auth/auth.context";
 import { CLIENT_ID } from "../../../constants";
 
 const Channel = () => {

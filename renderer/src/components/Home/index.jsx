@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Redirect } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { TabsContext } from "../../contexts/Tabs/tabs.context";
-import { OptionsContext } from "../../contexts/OptionsContext";
+import { OptionsContext } from "../../contexts/Options/options.context";
 import Follows from "./Follows";
 
 import "./style.css";
