@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Switch, Route, Redirect } from "react-router";
-import { TabsContext } from "../../contexts/TabsContext";
+import { TabsContext } from "../../contexts/Tabs/tabs.context";
 import Channel from "./Channel";
 import "./style.css";
 

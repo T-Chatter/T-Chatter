@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../../contexts/AuthContext";
+import { AuthContext } from "../../../contexts/Auth/auth.context";
 import { CLIENT_ID } from "../../../constants";
 import "./style.css";
 
@@ -36,7 +36,7 @@ const Follows = ({ addTab }) => {
   const refreshFollows = useCallback(
     (e) => {
       setIsLoadingFollows(true);
-      authContext.update(authContext?.authUser?.token);
+      authContext.updateAuthUser(authContext?.authUser?.token);
     },
     [authContext]
   );

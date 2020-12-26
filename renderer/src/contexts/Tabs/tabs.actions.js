@@ -1,0 +1,17 @@
+export const ADD_TAB = "ADD_TAB";
+export const REMOVE_TAB = "REMOVE_TAB";
+export const REMOVE_TAB_BY_ID = "REMOVE_TAB_BY_ID";
+export const SET_TABS = "SET_TABS";
+export const UPDATE_EMOTES = "UPDATE_EMOTES";
+export const UPDATE_GLOBAL_EMOTES = "UPDATE_GLOBAL_EMOTES";
+
+const actions = {
+  ADD_TAB: ADD_TAB,
+  REMOVE_TAB: REMOVE_TAB,
+  REMOVE_TAB_BY_ID: REMOVE_TAB_BY_ID,
+  SET_TABS: SET_TABS,
+  UPDATE_EMOTES: UPDATE_EMOTES,
+  UPDATE_GLOBAL_EMOTES: UPDATE_GLOBAL_EMOTES,
+};
+
+export default actions;

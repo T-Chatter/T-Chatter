@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import Container from "../../Container";
 import { CLIENT_ID } from "../../../constants";
-import { OptionsContext } from "../../../contexts/OptionsContext";
+import { OptionsContext } from "../../../contexts/Options/options.context";
 import { Redirect } from "react-router-dom";
 import "./style.css";
 import "../style.css";

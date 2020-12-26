@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { TabsContext } from "../../contexts/TabsContext";
+import { TabsContext } from "../../contexts/Tabs/tabs.context";
 import "./style.css";
 
 const Navbar = () => {

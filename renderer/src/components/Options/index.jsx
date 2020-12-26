@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { OptionsContext } from "../../contexts/OptionsContext";
+import { OptionsContext } from "../../contexts/Options/options.context";
 import Container from "../Container";
 import "./style.css";
-import { AuthContext } from "../../contexts/AuthContext";
-import { TabsContext } from "../../contexts/TabsContext";
+import { AuthContext } from "../../contexts/Auth/auth.context";
+import { TabsContext } from "../../contexts/Tabs/tabs.context";
 
 const Options = () => {
   const optionsContext = useContext(OptionsContext);

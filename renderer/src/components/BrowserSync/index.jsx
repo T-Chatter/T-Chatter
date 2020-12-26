@@ -1,6 +1,6 @@
 import React, { useContext, useCallback, useEffect, useState } from "react";
-import { TabsContext } from "../../contexts/TabsContext";
-import { OptionsContext } from "../../contexts/OptionsContext";
+import { TabsContext } from "../../contexts/Tabs/tabs.context";
+import { OptionsContext } from "../../contexts/Options/options.context";
 import { Redirect } from "react-router-dom";
 
 const BrowserSync = () => {
@@ -24,6 +24,9 @@ const BrowserSync = () => {
                 id: 0,
                 name: `Sync_${channel}`,
                 messages: [],
+                ffz: [],
+                bttv: [],
+                lastEmoteUpdate: new Date(1970, 1, 1).getTime(),
               };
               addTab(syncTab);
             }
@@ -32,6 +35,9 @@ const BrowserSync = () => {
               id: 0,
               name: `Sync_${channel}`,
               messages: [],
+              ffz: [],
+              bttv: [],
+              lastEmoteUpdate: new Date(1970, 1, 1).getTime(),
             };
             addTab(syncTab);
           }

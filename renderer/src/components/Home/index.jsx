@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
 import { Redirect } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { TabsContext } from "../../contexts/TabsContext";
-import { OptionsContext } from "../../contexts/OptionsContext";
+import { TabsContext } from "../../contexts/Tabs/tabs.context";
+import { OptionsContext } from "../../contexts/Options/options.context";
 import Follows from "./Follows";
 
 import "./style.css";
@@ -26,6 +26,9 @@ const Home = () => {
         id: uuidv4(),
         name: channel,
         messages: [],
+        ffz: [],
+        bttv: [],
+        lastEmoteUpdate: new Date(1970, 1, 1).getTime(),
       };
       addTab(tab);
       setRedirect(true);
@@ -38,6 +41,9 @@ const Home = () => {
         id: uuidv4(),
         name: channel,
         messages: [],
+        ffz: [],
+        bttv: [],
+        lastEmoteUpdate: new Date(1970, 1, 1).getTime(),
       };
       addTab(tab);
       setChannel(channel);
@@ -55,6 +61,9 @@ const Home = () => {
         id: 0,
         name: "Sync_",
         messages: [],
+        ffz: [],
+        bttv: [],
+        lastEmoteUpdate: new Date(1970, 1, 1).getTime(),
       };
       addTab(tab);
       setChannel("Sync_");
