@@ -6,6 +6,9 @@ import actions from "./tabs.actions";
 const TabsState = ({ children }) => {
   const initialState = {
     tabs: [],
+    globalBttv: [],
+    globalFfz: [],
+    lastGlobalEmoteUpdate: new Date(1970, 1, 1).getTime(),
   };
   const [state, dispatch] = useReducer(tabsReducer, initialState);
   const [firstRender, setFirstRender] = useState(true);
@@ -54,6 +57,56 @@ const TabsState = ({ children }) => {
     localStorage.setItem("userTabs", JSON.stringify(tabs));
   };
 
+  const updateGlobalEmotes = () => {
+    // BTTV Global
+    let bttv = [];
+    fetch("https://api.betterttv.net/3/cached/emotes/global")
+      .then((res) => res.json())
+      .then((res) => {
+        bttv = res;
+
+        // FFZ Global
+        let ffz = [];
+        fetch("https://api.frankerfacez.com/v1/set/global")
+          .then((res) => res.json())
+          .then((res) => {
+            ffz = res.sets["3"].emoticons;
+
+            dispatch({
+              type: actions.UPDATE_GLOBAL_EMOTES,
+              payload: { ffz, bttv },
+            });
+          });
+      });
+  };
+
+  const updateTabEmotes = (channelId, tabId) => {
+    const tab = state.tabs.find((tab) => tab.id === tabId);
+    if (tab !== undefined) {
+      // BTTV Channel
+      let bttv = {};
+      fetch(`https://api.betterttv.net/3/cached/users/twitch/${channelId}`)
+        .then((res) => res.json())
+        .then((res) => {
+          bttv = res;
+
+          // FFZ Channel
+          let ffz = {};
+          fetch(`https://api.frankerfacez.com/v1/room/id/${channelId}`)
+            .then((res) => res.json())
+            .then((res) => {
+              if (res.sets && Object.keys(res.sets).length > 0) {
+                ffz = res.sets[Object.keys(res.sets)[0]].emoticons;
+                dispatch({
+                  type: actions.UPDATE_EMOTES,
+                  payload: { tabId: tabId, bttv: bttv, ffz: ffz },
+                });
+              }
+            });
+        });
+    }
+  };
+
   useEffect(() => {
     if (firstRender) {
       const userTabs = JSON.parse(localStorage.getItem("userTabs"));
@@ -73,10 +126,15 @@ const TabsState = ({ children }) => {
     <TabsContext.Provider
       value={{
         tabs: state.tabs,
+        globalBttv: state.globalBttv,
+        globalFfz: state.globalFfz,
+        lastGlobalEmoteUpdate: state.lastGlobalEmoteUpdate,
         addTab,
         removeTab,
         removeTabById,
         updateLocalStorage,
+        updateGlobalEmotes,
+        updateTabEmotes,
       }}
     >
       {children}

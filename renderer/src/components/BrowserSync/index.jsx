@@ -24,6 +24,9 @@ const BrowserSync = () => {
                 id: 0,
                 name: `Sync_${channel}`,
                 messages: [],
+                ffz: [],
+                bttv: [],
+                lastEmoteUpdate: new Date(1970, 1, 1).getTime(),
               };
               addTab(syncTab);
             }
@@ -32,6 +35,9 @@ const BrowserSync = () => {
               id: 0,
               name: `Sync_${channel}`,
               messages: [],
+              ffz: [],
+              bttv: [],
+              lastEmoteUpdate: new Date(1970, 1, 1).getTime(),
             };
             addTab(syncTab);
           }

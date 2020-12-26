@@ -26,6 +26,9 @@ const Home = () => {
         id: uuidv4(),
         name: channel,
         messages: [],
+        ffz: [],
+        bttv: [],
+        lastEmoteUpdate: new Date(1970, 1, 1).getTime(),
       };
       addTab(tab);
       setRedirect(true);
@@ -38,6 +41,9 @@ const Home = () => {
         id: uuidv4(),
         name: channel,
         messages: [],
+        ffz: [],
+        bttv: [],
+        lastEmoteUpdate: new Date(1970, 1, 1).getTime(),
       };
       addTab(tab);
       setChannel(channel);
@@ -55,6 +61,9 @@ const Home = () => {
         id: 0,
         name: "Sync_",
         messages: [],
+        ffz: [],
+        bttv: [],
+        lastEmoteUpdate: new Date(1970, 1, 1).getTime(),
       };
       addTab(tab);
       setChannel("Sync_");

@@ -15,7 +15,16 @@ import { AuthContext } from "../../../contexts/Auth/auth.context";
 import { CLIENT_ID } from "../../../constants";
 
 const Channel = () => {
-  const { removeTab, tabs, updateLocalStorage } = useContext(TabsContext);
+  const {
+    removeTab,
+    tabs,
+    updateLocalStorage,
+    globalBttv,
+    globalFfz,
+    lastGlobalEmoteUpdate,
+    updateGlobalEmotes,
+    updateTabEmotes,
+  } = useContext(TabsContext);
   const { options } = useContext(OptionsContext);
   const authContext = useContext(AuthContext);
   const [channel, setChannel] = useState(
@@ -28,10 +37,6 @@ const Channel = () => {
   let showDate = false;
   let messageLimit = useRef(options?.chat?.messages?.limit);
   let smoothScroll = useRef(options?.chat?.smoothScroll);
-  let bttvGlobalCached = useRef(null);
-  let bttvChannelCached = useRef(null);
-  let ffzGlobalCached = useRef(null);
-  let ffzChannelCached = useRef(null);
   let loadedEmotes = useRef(false);
 
   const client = tmi.client({
@@ -74,7 +79,7 @@ const Channel = () => {
       message = insertEmotes(message, emotesObj);
     }
 
-    bttvGlobalCached?.current?.forEach((x) => {
+    globalBttv?.forEach((x) => {
       const regex = new RegExp(`\\b${x.code}\\b`, "g");
       const match = message.match(regex);
       if (match !== null && match.length > 0) {
@@ -82,7 +87,7 @@ const Channel = () => {
       }
     });
 
-    bttvChannelCached?.current?.sharedEmotes?.forEach((x) => {
+    tab?.bttv?.sharedEmotes?.forEach((x) => {
       const regex = new RegExp(`\\b${x.code}\\b`, "g");
       const match = message.match(regex);
       if (match !== null && match.length > 0) {
@@ -90,7 +95,7 @@ const Channel = () => {
       }
     });
 
-    ffzGlobalCached?.current?.forEach((x) => {
+    globalFfz?.forEach((x) => {
       const regex = new RegExp(`\\b${x.name}\\b`, "g");
       const match = message.match(regex);
       if (match !== null && match.length > 0) {
@@ -98,7 +103,7 @@ const Channel = () => {
       }
     });
 
-    ffzChannelCached?.current?.forEach((x) => {
+    tab?.ffz?.forEach((x) => {
       const regex = new RegExp(`\\b${x.name}\\b`, "g");
       const match = message.match(regex);
       if (match !== null && match.length > 0) {
@@ -317,43 +322,24 @@ const Channel = () => {
 
   useEffect(() => {
     if (!loadedEmotes.current) {
-      // BTTV Global
-      fetch("https://api.betterttv.net/3/cached/emotes/global").then(
-        async (res) => {
-          bttvGlobalCached.current = await res.json();
-        }
-      );
-      // FFZ Global
-      fetch("https://api.frankerfacez.com/v1/set/global").then(async (resp) => {
-        const res = await resp.json();
-        ffzGlobalCached.current = res.sets["3"].emoticons;
-      });
-      // Get twitch id
-      let c = channel;
-      if (tab?.id === 0) c = channel.replace("Sync_", "");
-      fetch(`https://api.frankerfacez.com/v1/user/${c.toLowerCase()}`).then(
-        async (res) => {
-          const { user } = await res.json();
-          // BTTV Channel
-          fetch(
-            `https://api.betterttv.net/3/cached/users/twitch/${
-              user?.twitch_id ?? 0
-            }`
-          ).then(async (res) => {
-            bttvChannelCached.current = await res.json();
+      const date = new Date(Date.now());
+      if (lastGlobalEmoteUpdate <= date.setMinutes(date.getMinutes() - 5)) {
+        console.info("Updating global emotes.");
+        updateGlobalEmotes();
+      }
+
+      if (tab.lastEmoteUpdate <= date.setMinutes(date.getMinutes() - 5)) {
+        // Get twitch id
+        let c = channel;
+        if (tab?.id === 0) c = channel.replace("Sync_", "");
+        fetch(`https://api.frankerfacez.com/v1/user/${c.toLowerCase()}`)
+          .then((res) => res.json())
+          .then((res) => {
+            const { user } = res;
+            console.info("Updating channel emotes.");
+            updateTabEmotes(user?.twitch_id ?? 0, tab.id);
           });
-          // FFZ Channel
-          fetch(
-            `https://api.frankerfacez.com/v1/room/id/${user?.twitch_id ?? 0}`
-          ).then(async (resp) => {
-            const res = await resp.json();
-            if (res.sets && Object.keys(res.sets).length > 0) {
-              ffzChannelCached.current =
-                res.sets[Object.keys(res.sets)[0]].emoticons;
-            }
-          });
-        }
-      );
+      }
 
       const container = document.getElementById("messages-container");
       while (container.childNodes.length > messageLimit.current) {
@@ -386,10 +372,6 @@ const Channel = () => {
       document.removeEventListener("keydown", handleKeydownPause, true);
       document.removeEventListener("keyup", handleKeyupPause, true);
       client.removeAllListeners();
-      bttvChannelCached.current = null;
-      bttvGlobalCached.current = null;
-      ffzChannelCached.current = null;
-      ffzGlobalCached.current = null;
     };
   }, [
     isConnected,
@@ -405,6 +387,12 @@ const Channel = () => {
     loadedEmotes,
     tab.messages,
     tab.id,
+    tab.lastEmoteUpdate,
+    globalBttv,
+    globalFfz,
+    lastGlobalEmoteUpdate,
+    updateGlobalEmotes,
+    updateTabEmotes,
   ]);
 
   if (channel === "" || tab === null) return <Redirect to="/" />;
