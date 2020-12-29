@@ -24,6 +24,9 @@ const Channel = () => {
     lastGlobalEmoteUpdate,
     updateGlobalEmotes,
     updateTabEmotes,
+    updateTabBadges,
+    updateGlobalBadges,
+    globalBadges,
   } = useContext(TabsContext);
   const { options } = useContext(OptionsContext);
   const authContext = useContext(AuthContext);
@@ -72,6 +75,8 @@ const Channel = () => {
       tab.messages.shift();
     }
 
+    //#region Emotes
+
     const date = new Date();
 
     let emotesObj = userState.emotes;
@@ -111,14 +116,26 @@ const Channel = () => {
       }
     });
 
+    //#endregion Emotes
+
     const msg = `${
       showDate ? date.getHours() + ":" + date.getMinutes() + " " : ""
-    }<span style="color: ${
+    }${
+      userState.badges?.broadcaster
+        ? `<span class="tooltip tooltip-right" data-text="Broadcaster"><img src="${globalBadges["broadcaster"]?.versions["1"]?.image_url_1x}" alt="${globalBadges["moderator"]?.versions["1"]?.description}" /></span>`
+        : ""
+    }${
+      userState.mod
+        ? `<span class="tooltip tooltip-right" data-text="Moderator"><img src="${globalBadges["moderator"]?.versions["1"]?.image_url_1x}" alt="${globalBadges["moderator"]?.versions["1"]?.description}" /></span>`
+        : ""
+    }
+      ${
+        userState.subscriber
+          ? `<span class="tooltip tooltip-right" data-text="Subscriber"><img src="${tab.badges[0].image_url_1x}" alt="${tab.badges[0].description}" /></span>`
+          : ""
+      }<span style="color: ${
       userState.color ?? "#1c82e7"
-    }; font-weight: bold; word-wrap: none;">${
-      userState.badges?.broadcaster ? "[B]&nbsp;" : ""
-    }${userState.mod ? "[M]&nbsp;" : ""}
-      ${userState.subscriber ? "[S]&nbsp;" : ""}${userState.username}</span>${
+    }; font-weight: bold; word-wrap: none;">${userState.username}</span>${
       userState["message-type"] === "action" ? "&nbsp;" : "<span>:&nbsp;</span>"
     }${message}`;
 
@@ -326,6 +343,7 @@ const Channel = () => {
       if (lastGlobalEmoteUpdate <= date.setMinutes(date.getMinutes() - 5)) {
         console.info("Updating global emotes.");
         updateGlobalEmotes();
+        updateGlobalBadges();
       }
 
       if (tab.lastEmoteUpdate <= date.setMinutes(date.getMinutes() - 5)) {
@@ -338,6 +356,7 @@ const Channel = () => {
             const { user } = res;
             console.info("Updating channel emotes.");
             updateTabEmotes(user?.twitch_id ?? 0, tab.id);
+            updateTabBadges(user?.twitch_id ?? 0, tab.id);
           });
       }
 
@@ -393,6 +412,8 @@ const Channel = () => {
     lastGlobalEmoteUpdate,
     updateGlobalEmotes,
     updateTabEmotes,
+    updateTabBadges,
+    updateGlobalBadges,
   ]);
 
   if (channel === "" || tab === null) return <Redirect to="/" />;

@@ -27,6 +27,7 @@ const BrowserSync = () => {
                 ffz: [],
                 bttv: [],
                 lastEmoteUpdate: new Date(1970, 1, 1).getTime(),
+                badges: [],
               };
               addTab(syncTab);
             }
@@ -38,6 +39,7 @@ const BrowserSync = () => {
               ffz: [],
               bttv: [],
               lastEmoteUpdate: new Date(1970, 1, 1).getTime(),
+              badges: [],
             };
             addTab(syncTab);
           }

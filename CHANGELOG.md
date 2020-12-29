@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added correct badges to messages.
+
 ## [0.3.11] - 2020-12-26
 
 - Fixed issue with Sync tab not sending messages.

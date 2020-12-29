@@ -9,6 +9,7 @@ const TabsState = ({ children }) => {
     globalBttv: [],
     globalFfz: [],
     lastGlobalEmoteUpdate: new Date(1970, 1, 1).getTime(),
+    globalBadges: [],
   };
   const [state, dispatch] = useReducer(tabsReducer, initialState);
   const [firstRender, setFirstRender] = useState(true);
@@ -80,6 +81,18 @@ const TabsState = ({ children }) => {
       });
   };
 
+  const updateGlobalBadges = () => {
+    fetch("https://badges.twitch.tv/v1/badges/global/display")
+      .then((res) => res.json())
+      .then((res) => {
+        const badges = res?.badge_sets;
+        dispatch({
+          type: actions.UPDATE_GLOBAL_BADGES,
+          payload: { badges },
+        });
+      });
+  };
+
   const updateTabEmotes = (channelId, tabId) => {
     const tab = state.tabs.find((tab) => tab.id === tabId);
     if (tab !== undefined) {
@@ -107,6 +120,23 @@ const TabsState = ({ children }) => {
     }
   };
 
+  const updateTabBadges = (channelId, tabId) => {
+    const tab = state.tabs.find((tab) => tab.id === tabId);
+    if (tab !== undefined) {
+      fetch(
+        "https://badges.twitch.tv/v1/badges/channels/" + channelId + "/display"
+      )
+        .then((res) => res.json())
+        .then((res) => {
+          const badges = res?.badge_sets?.subscriber?.versions;
+          dispatch({
+            type: actions.UPDATE_BADGES,
+            payload: { tabId, badges },
+          });
+        });
+    }
+  };
+
   useEffect(() => {
     if (firstRender) {
       const userTabs = JSON.parse(localStorage.getItem("userTabs"));
@@ -128,13 +158,16 @@ const TabsState = ({ children }) => {
         tabs: state.tabs,
         globalBttv: state.globalBttv,
         globalFfz: state.globalFfz,
+        globalBadges: state.globalBadges,
         lastGlobalEmoteUpdate: state.lastGlobalEmoteUpdate,
         addTab,
         removeTab,
         removeTabById,
         updateLocalStorage,
         updateGlobalEmotes,
+        updateGlobalBadges,
         updateTabEmotes,
+        updateTabBadges,
       }}
     >
       {children}

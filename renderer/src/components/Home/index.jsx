@@ -29,6 +29,7 @@ const Home = () => {
         ffz: [],
         bttv: [],
         lastEmoteUpdate: new Date(1970, 1, 1).getTime(),
+        badges: [],
       };
       addTab(tab);
       setRedirect(true);
@@ -44,6 +45,7 @@ const Home = () => {
         ffz: [],
         bttv: [],
         lastEmoteUpdate: new Date(1970, 1, 1).getTime(),
+        badges: [],
       };
       addTab(tab);
       setChannel(channel);
@@ -64,6 +66,7 @@ const Home = () => {
         ffz: [],
         bttv: [],
         lastEmoteUpdate: new Date(1970, 1, 1).getTime(),
+        badges: [],
       };
       addTab(tab);
       setChannel("Sync_");
