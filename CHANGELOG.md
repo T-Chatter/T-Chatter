@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 - Added correct badges to messages.
+- Added click to reply when clicking on a username.
 
 ## [0.3.11] - 2020-12-26
 

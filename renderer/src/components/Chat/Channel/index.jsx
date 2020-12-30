@@ -77,8 +77,6 @@ const Channel = () => {
 
     //#region Emotes
 
-    const date = new Date();
-
     let emotesObj = userState.emotes;
     if (emotesObj) {
       message = insertEmotes(message, emotesObj);
@@ -118,26 +116,7 @@ const Channel = () => {
 
     //#endregion Emotes
 
-    const msg = `${
-      showDate ? date.getHours() + ":" + date.getMinutes() + " " : ""
-    }${
-      userState.badges?.broadcaster
-        ? `<span class="tooltip tooltip-right" data-text="Broadcaster"><img src="${globalBadges["broadcaster"]?.versions["1"]?.image_url_1x}" alt="${globalBadges["moderator"]?.versions["1"]?.description}" /></span>`
-        : ""
-    }${
-      userState.mod
-        ? `<span class="tooltip tooltip-right" data-text="Moderator"><img src="${globalBadges["moderator"]?.versions["1"]?.image_url_1x}" alt="${globalBadges["moderator"]?.versions["1"]?.description}" /></span>`
-        : ""
-    }
-      ${
-        userState.subscriber
-          ? `<span class="tooltip tooltip-right" data-text="Subscriber"><img src="${tab.badges[0].image_url_1x}" alt="${tab.badges[0].description}" /></span>`
-          : ""
-      }<span style="color: ${
-      userState.color ?? "#1c82e7"
-    }; font-weight: bold; word-wrap: none;">${userState.username}</span>${
-      userState["message-type"] === "action" ? "&nbsp;" : "<span>:&nbsp;</span>"
-    }${message}`;
+    const msg = constructMessage(message, userState);
 
     tab.messages.push(msg);
 
@@ -148,10 +127,89 @@ const Channel = () => {
       msgEl.style.color = userState.color;
     }
 
+    msgEl.addEventListener("click", insertReply);
+
     container.append(msgEl);
     scrollToBottom();
     updateLocalStorage(tabs);
   });
+
+  const constructMessage = (message, userState) => {
+    const date = new Date();
+
+    let badges = "";
+    if (userState?.badges) {
+      Object.keys(userState.badges).forEach((key) => {
+        const keyTitle =
+          key.substring(0, 1).toUpperCase() + key.substring(1).toLowerCase();
+        if (key === "subscriber") {
+          if (tab.badges) {
+            const cBadge = tab?.badges[userState?.badges[key]]?.image_url_1x;
+            if (cBadge) {
+              badges += `<span class="tooltip tooltip-right" data-text="${keyTitle}" ><img src="${cBadge}" alt="${keyTitle}" /></span>`;
+              return;
+            }
+          }
+          badges += `<span class="tooltip tooltip-right" data-text="${keyTitle}" ><img src="${globalBadges[key]?.versions[0]?.image_url_1x}" alt="${keyTitle}" /></span>`;
+          return;
+        }
+        const gBadge =
+          globalBadges[key]?.versions[userState.badges[key]]?.image_url_1x;
+        if (gBadge) {
+          badges += `<span class="tooltip tooltip-right" data-text="${keyTitle}" ><img src="${gBadge}" alt="${keyTitle}" /></span>`;
+          return;
+        }
+      });
+    }
+
+    const mentionRegex = new RegExp(`\\B@[\\S]{1,}\\b`, "gi");
+    const matches = message.match(mentionRegex);
+    if (matches !== null && matches.length > 0) {
+      matches.forEach((match) => {
+        message = insertMention(message, match);
+      });
+    }
+
+    const htmlMsg = `${
+      showDate ? date.getHours() + ":" + date.getMinutes() + " " : ""
+    }${badges}<span style="color: ${
+      userState.color ?? "#1c82e7"
+    }; font-weight: bold; word-wrap: none;" class="message-username" >${
+      userState.username
+    }</span>${
+      userState["message-type"] === "action" ? "&nbsp;" : "<span>:&nbsp;</span>"
+    }${message}`;
+
+    return htmlMsg;
+  };
+
+  const insertMention = (message, match) => {
+    if (message === "" || !match) return;
+    const stringReplacements = [];
+    const start = message.indexOf(match);
+    const end = start + match.length;
+    const stringToReplace = message.substring(
+      parseInt(start, 10),
+      parseInt(end, 10) + 1
+    );
+
+    stringReplacements.push({
+      stringToReplace: stringToReplace,
+      replacement: `${
+        start === 0 ? "" : "&nbsp;"
+      }<b class="message-mention" data-username="${match.replace(
+        "@",
+        ""
+      )}" >${stringToReplace}</b>${end === message.length ? "" : "&nbsp;"}`,
+    });
+    const messageHTML = stringReplacements.reduce(
+      (acc, { stringToReplace, replacement }) => {
+        return acc.split(stringToReplace).join(replacement);
+      },
+      message
+    );
+    return messageHTML;
+  };
 
   const insertBttvEmote = (message, code, id) => {
     if (message === "" || !code) return;
@@ -331,6 +389,18 @@ const Channel = () => {
     }
   };
 
+  const insertReply = (e) => {
+    if (e.target.classList.contains("message-username")) {
+      const input = document.getElementById("message");
+      input.value += "@" + e.target.innerText + " ";
+      input.focus();
+    } else if (e.target.classList.contains("message-mention")) {
+      const input = document.getElementById("message");
+      input.value += e.target.innerText + " ";
+      input.focus();
+    }
+  };
+
   const setPadding = () => {
     document.getElementById("messages-container").style.paddingBottom =
       document.getElementById("message").getBoundingClientRect().height + "px";
@@ -381,7 +451,13 @@ const Channel = () => {
       document.addEventListener("wheel", handleScrollPause);
       document.addEventListener("keydown", handleKeydownPause);
       document.addEventListener("keyup", handleKeyupPause);
+      document.querySelectorAll(".message").forEach((el) => {
+        el.removeEventListener("click", insertReply);
+      });
       scrollToBottom();
+      document.querySelectorAll(".message").forEach((el) => {
+        el.addEventListener("click", insertReply);
+      });
     }
     return () => {
       if (isConnected) {
@@ -390,6 +466,9 @@ const Channel = () => {
       document.removeEventListener("wheel", handleScrollPause, true);
       document.removeEventListener("keydown", handleKeydownPause, true);
       document.removeEventListener("keyup", handleKeyupPause, true);
+      document.querySelectorAll(".message").forEach((el) => {
+        el.removeEventListener("click", insertReply);
+      });
       client.removeAllListeners();
     };
   }, [
