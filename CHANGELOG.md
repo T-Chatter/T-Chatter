@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.12] - 2020-12-30
+
 - Added correct badges to messages.
 - Added click to reply when clicking on a username.
 
@@ -88,6 +90,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release v0.1.0
 
 [unreleased]: https://github.com/T-Chatter/T-Chatter/compare/v0.3.11...dev
+[0.3.12]: https://github.com/T-Chatter/T-Chatter/compare/v0.3.11...v0.3.12
 [0.3.11]: https://github.com/T-Chatter/T-Chatter/compare/v0.3.10...v0.3.11
 [0.3.10]: https://github.com/T-Chatter/T-Chatter/compare/v0.3.9...v0.3.10
 [0.3.9]: https://github.com/T-Chatter/T-Chatter/compare/v0.3.8...v0.3.9
