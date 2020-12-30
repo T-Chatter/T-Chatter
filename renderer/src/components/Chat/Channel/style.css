@@ -198,3 +198,19 @@
   font-size: 0.75rem;
   text-align: center !important;
 }
+
+.message-mention {
+  cursor: pointer;
+}
+
+.message-mention:hover {
+  text-decoration: underline;
+}
+
+.message-username {
+  cursor: pointer;
+}
+
+.message-username:hover {
+  text-decoration: underline;
+}

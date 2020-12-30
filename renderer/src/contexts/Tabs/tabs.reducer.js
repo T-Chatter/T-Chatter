@@ -5,6 +5,8 @@ import {
   SET_TABS,
   UPDATE_EMOTES,
   UPDATE_GLOBAL_EMOTES,
+  UPDATE_BADGES,
+  UPDATE_GLOBAL_BADGES,
 } from "./tabs.actions";
 
 const tabsReducer = (state, action) => {
@@ -50,6 +52,23 @@ const tabsReducer = (state, action) => {
         globalFfz: action.payload.ffz,
         globalBttv: action.payload.bttv,
         lastGlobalEmoteUpdate: Date.now(),
+      };
+    case UPDATE_BADGES:
+      return {
+        ...state,
+        tabs: state.tabs.map((tab) =>
+          tab.id === action.payload.tabId
+            ? {
+                ...tab,
+                badges: action.payload.badges,
+              }
+            : tab
+        ),
+      };
+    case UPDATE_GLOBAL_BADGES:
+      return {
+        ...state,
+        globalBadges: action.payload.badges,
       };
     default:
       return state;

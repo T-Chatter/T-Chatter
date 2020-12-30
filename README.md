@@ -19,7 +19,7 @@ You can download the installer <a href="https://t-chatter.github.io/" target="_b
 
 ## Changes
 
-The changelog is available [here](https://github.com/T-Chatter/T-Chatter/blob/master/CHANGELOG.md).
+The changelog is available [here](https://github.com/T-Chatter/T-Chatter/blob/dev/CHANGELOG.md).
 
 ## Building the application yourself.
 
