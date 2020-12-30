@@ -108,6 +108,7 @@ code {
 }
 
 .tooltip::after {
+  z-index: 20;
   content: "";
   position: absolute;
 
