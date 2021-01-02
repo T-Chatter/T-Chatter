@@ -32,7 +32,6 @@ const tabsReducer = (state, action) => {
         tabs: state.tabs.filter((tab) => tab.id !== action.payload),
       };
     case UPDATE_EMOTES:
-      console.log(action.payload);
       return {
         ...state,
         tabs: state.tabs.map((tab) =>

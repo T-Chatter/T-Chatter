@@ -4,7 +4,7 @@ import { TabsContext } from "../../contexts/Tabs/tabs.context";
 import "./style.css";
 
 const Navbar = () => {
-  const { removeTab } = useContext(TabsContext);
+  const { removeTab, removeTabById } = useContext(TabsContext);
   const [isAdditionalOpen, setIsAdditionalOpen] = useState(false);
 
   document.addEventListener(
@@ -39,6 +39,10 @@ const Navbar = () => {
         target.classList.add("open");
         return;
       }
+    } else if (e.button === 1) {
+      e.preventDefault();
+      const tabId = e.target.id;
+      if (tabId) removeTabById(tabId);
     }
     document.querySelectorAll(".navbar-additional").forEach((el) => {
       el.classList.add("hidden");
@@ -65,6 +69,7 @@ const Navbar = () => {
             id="settings"
             activeClassName="active"
             onClick={displayAdditional}
+            onAuxClick={displayAdditional}
           >
             <i className="fas fa-cog navbar-link-i"></i>
           </NavLink>
@@ -76,6 +81,7 @@ const Navbar = () => {
             exact={true}
             activeClassName="active"
             onClick={displayAdditional}
+            onAuxClick={displayAdditional}
           >
             <i className="fas fa-plus"></i>
           </NavLink>
@@ -91,6 +97,7 @@ const Navbar = () => {
                     key={tab.id}
                     id={tab.id}
                     onClick={displayAdditional}
+                    onAuxClick={displayAdditional}
                   >
                     {tab.name}
                   </NavLink>

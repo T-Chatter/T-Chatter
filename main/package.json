@@ -1,7 +1,7 @@
 {
   "name": "t-chatter",
   "description": "A Twitch chat client.",
-  "version": "0.3.12",
+  "version": "0.3.13",
   "private": true,
   "license": "MIT",
   "keywords": [
