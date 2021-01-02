@@ -70,26 +70,29 @@ const Channel = () => {
     console.error(msg);
   };
 
-  const client = tmi.client({
-    channels: [tab?.id === 0 ? channel.replace("Sync_", "") : channel],
-    options: {
-      clientId: CLIENT_ID,
-      debug: process.env.NODE_ENV === "development" ? true : false,
-    },
-    identity:
-      authContext?.authUser?.username && authContext?.authUser?.username !== ""
-        ? {
-            username: authContext.authUser.username,
-            password: authContext.authUser.token,
-          }
-        : null,
-    connection: { reconnect: true },
-    logger: {
-      error: logError,
-      warn: (msg) => console.warn(msg),
-      info: (msg) => console.log(msg),
-    },
-  });
+  const client = useRef(
+    tmi.client({
+      channels: [tab?.id === 0 ? channel.replace("Sync_", "") : channel],
+      options: {
+        clientId: CLIENT_ID,
+        debug: process.env.NODE_ENV === "development" ? true : false,
+      },
+      identity:
+        authContext?.authUser?.username &&
+        authContext?.authUser?.username !== ""
+          ? {
+              username: authContext.authUser.username,
+              password: authContext.authUser.token,
+            }
+          : null,
+      connection: { reconnect: true },
+      logger: {
+        error: logError,
+        warn: (msg) => console.warn(msg),
+        info: (msg) => console.log(msg),
+      },
+    })
+  );
 
   const insertMention = (message, match) => {
     if (message === "" || !match) return;
@@ -224,7 +227,7 @@ const Channel = () => {
     if (message.trim() !== "") {
       let c = channel;
       if (tab?.id === 0) c = channel.replace("Sync_", "");
-      client
+      client.current
         .say(c, message)
         .then()
         .catch((err) => console.log(err));
@@ -260,6 +263,12 @@ const Channel = () => {
       el.style.display = "none";
     }
   }, []);
+
+  const insertEmote = (e, emoteCode) => {
+    const input = document.getElementById("message");
+    input.value += emoteCode + " ";
+    input.focus();
+  };
 
   //#endregion Functions
 
@@ -466,6 +475,19 @@ const Channel = () => {
         console.log(err);
       };
 
+      client.current
+        .connect()
+        .then(() => {
+          console.log("Connected");
+          isConnected.current = true;
+          console.log(client.current.readyState());
+        })
+        .catch((err) => {
+          isConnected.current = false;
+          setConnectionError(true);
+          console.log(err);
+        });
+
       document.addEventListener("wheel", handleScrollPause);
       document.addEventListener("keydown", handleKeydownPause);
       document.addEventListener("keyup", handleKeyupPause);
@@ -475,40 +497,29 @@ const Channel = () => {
       document.querySelectorAll(".message").forEach((el) => {
         el.addEventListener("click", insertReply);
       });
-      client.on("followersonly", followersOnly);
-      client.on("roomstate", roomStateChange);
-      client.on("message", handleMessage);
-      client.on("connected", handleConnected);
-      client.on("disconnected", handleDiconnected);
-
-      client
-        .connect()
-        .then(() => {
-          console.log("Connected");
-          isConnected.current = true;
-        })
-        .catch((err) => {
-          isConnected.current = false;
-          setConnectionError(true);
-          console.log(err);
-        });
+      client.current.on("followersonly", followersOnly);
+      client.current.on("roomstate", roomStateChange);
+      client.current.on("message", handleMessage);
+      client.current.on("connected", handleConnected);
+      client.current.on("disconnected", handleDiconnected);
 
       scrollToBottom();
 
+      const c = client;
       return function cleanup() {
-        client.removeAllListeners();
-        client.removeListener("followersonly", followersOnly);
-        client.removeListener("roomstate", roomStateChange);
-        client.removeListener("message", handleMessage);
-        client.removeListener("connected", handleConnected);
-        client.removeListener("disconnected", handleDiconnected);
+        c.current.removeAllListeners();
+        c.current.removeListener("followersonly", followersOnly);
+        c.current.removeListener("roomstate", roomStateChange);
+        c.current.removeListener("message", handleMessage);
+        c.current.removeListener("connected", handleConnected);
+        c.current.removeListener("disconnected", handleDiconnected);
         document.removeEventListener("wheel", handleScrollPause, true);
         document.removeEventListener("keydown", handleKeydownPause, true);
         document.removeEventListener("keyup", handleKeyupPause, true);
         document.querySelectorAll(".message").forEach((el) => {
           el.removeEventListener("click", insertReply);
         });
-        client.disconnect();
+        c.current.disconnect();
       };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -610,6 +621,8 @@ const Channel = () => {
           isReady={isChatReady}
           connectionError={connectionError}
           roomState={roomState}
+          tab={tab}
+          insertEmote={insertEmote}
         />
       </div>
       <div id="paused">

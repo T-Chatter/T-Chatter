@@ -1,4 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { TabsContext } from "../../../../contexts/Tabs/tabs.context";
+import "./Input.css";
 
 const Input = ({
   authUser,
@@ -9,7 +11,16 @@ const Input = ({
   isReady,
   roomState,
   connectionError,
+  tab,
+  insertEmote,
 }) => {
+  const tabsContext = useContext(TabsContext);
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleEmoteMenu = (e, close = false) => {
+    if (close) setIsOpen(false);
+    else setIsOpen(!isOpen);
+  };
+
   const State = () => {
     const css = {
       position: "absolute",
@@ -103,6 +114,70 @@ const Input = ({
     else return null;
   };
 
+  const Emote = ({ id, code, bttv = false, ffz = false }) => {
+    if (!id) return null;
+    else if (bttv)
+      return (
+        <span
+          className="emote-menu-emote"
+          onClick={(e) => insertEmote(e, code)}
+        >
+          <img src={`https://cdn.betterttv.net/emote/${id}/1x`} alt={code} />
+        </span>
+      );
+    else if (ffz)
+      return (
+        <span
+          className="emote-menu-emote"
+          onClick={(e) => insertEmote(e, code)}
+        >
+          <img src={`https://cdn.frankerfacez.com/emote/${id}/1`} alt={code} />
+        </span>
+      );
+    else return null;
+  };
+
+  const EmoteMenu = () => {
+    return (
+      <>
+        <div id="emote-menu" style={{ display: isOpen ? "flex" : "none" }}>
+          {tabsContext?.globalBttv?.length > 0 ? <p>Global BTTV</p> : null}
+          <div id="globalBTTV">
+            {tabsContext?.globalBttv?.map((e) => {
+              return <Emote key={e.id} id={e.id} code={e.code} bttv={true} />;
+            })}
+          </div>
+          {tabsContext?.globalFfz?.length > 0 ? <p>Global FFZ</p> : null}
+          <div id="globalFFZ">
+            {tabsContext?.globalFfz?.map((e) => {
+              return <Emote key={e.id} id={e.id} code={e.name} ffz={true} />;
+            })}
+          </div>
+          {tab?.bttv?.sharedEmotes?.length > 0 ? <p>Channel BTTV</p> : null}
+          <div id="channelBTTV">
+            {tab?.bttv?.sharedEmotes?.map((e) => {
+              return <Emote key={e.id} id={e.id} code={e.code} bttv={true} />;
+            })}
+          </div>
+          {tab?.ffz?.length > 0 ? <p>Channel FFZ</p> : null}
+          <div id="channelFFZ">
+            {tab?.ffz?.map((e) => {
+              return <Emote key={e.id} id={e.id} code={e.name} ffz={true} />;
+            })}
+          </div>
+          <div className="emote-menu-search-container">
+            <input
+              className="emote-menu-search-input"
+              placeholder="Seach emotes"
+              type="text"
+            />
+          </div>
+        </div>
+        <i className="far fa-smile emote-btn" onClick={toggleEmoteMenu}></i>
+      </>
+    );
+  };
+
   if (!isReady && !connectionError)
     return (
       <>
@@ -110,7 +185,6 @@ const Input = ({
           className="message-input"
           type="text"
           id="message"
-          onKeyPress={handleSend}
           placeholder="Connecting..."
           disabled={true}
         />
@@ -125,7 +199,6 @@ const Input = ({
           className="message-input"
           type="text"
           id="message"
-          onKeyPress={handleSend}
           placeholder="Connection Error"
           disabled={true}
         />
@@ -136,14 +209,23 @@ const Input = ({
     return (
       <>
         <State />
-        <input
-          className="message-input"
-          type="text"
-          id="message"
-          onKeyPress={handleSend}
-          placeholder="Send a message"
-        />
-        <button className="send-btn" onClick={sendMessage}>
+        <div className="message-input-container">
+          <input
+            className="message-input"
+            type="text"
+            id="message"
+            onKeyPress={handleSend}
+            placeholder="Send a message"
+          />
+          <EmoteMenu />
+        </div>
+        <button
+          className="send-btn"
+          onClick={(e) => {
+            sendMessage(e);
+            toggleEmoteMenu(e, true);
+          }}
+        >
           Send
         </button>
       </>
