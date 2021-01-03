@@ -1,0 +1,77 @@
+#emote-menu::-webkit-scrollbar {
+    background: #19161d;
+    width: 10px;
+    position: fixed;
+    right: 1rem;
+    top: 1rem;
+}
+
+#emote-menu::-webkit-scrollbar-thumb {
+    background: #88888811;
+    border: solid 1px #88888822;
+    border-radius: 10px;
+}
+
+#emote-menu::-webkit-scrollbar-thumb:hover {
+    background: #88888822;
+    border: solid 1px #88888833;
+}
+
+#emote-menu {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin-bottom: 40px;
+    width: 100%;
+    max-height: 70vh;
+    background-color: #121013;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    overflow: auto;
+    padding-bottom: calc(1rem + 10px);
+}
+
+#globalBTTV,
+#globalFFZ,
+#channelBTTV,
+#channelFFZ {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.emote-menu-emote {
+    padding: 0.25rem;
+    border-radius: 10%;
+}
+
+.emote-menu-emote.hidden {
+    display: none;
+}
+
+.emote-menu-emote:hover {
+    background-color: #4e355c;
+    cursor: pointer;
+}
+
+.emote-menu-search-container {
+    position: fixed;
+    bottom: calc(46px + 0.25rem);
+    left: 0;
+    width: 100%;
+    height: 1rem;
+}
+
+.emote-menu-search-input {
+    width: 100%;
+    height: 100%;
+    padding: 0.25rem;
+}
+
+.emote-menu-search-input:focus {
+    border: #772ce8 solid 2px;
+    outline: none;
+}

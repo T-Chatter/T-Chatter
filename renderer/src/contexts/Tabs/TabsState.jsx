@@ -61,14 +61,20 @@ const TabsState = ({ children }) => {
   const updateGlobalEmotes = () => {
     // BTTV Global
     let bttv = [];
-    fetch("https://api.betterttv.net/3/cached/emotes/global")
+    const encodedUri = encodeURI(
+      "https://api.betterttv.net/3/cached/emotes/global"
+    );
+    fetch(encodedUri)
       .then((res) => res.json())
       .then((res) => {
         bttv = res;
 
         // FFZ Global
+        const encodedUri = encodeURI(
+          "https://api.frankerfacez.com/v1/set/global"
+        );
         let ffz = [];
-        fetch("https://api.frankerfacez.com/v1/set/global")
+        fetch(encodedUri)
           .then((res) => res.json())
           .then((res) => {
             ffz = res.sets["3"].emoticons;
@@ -82,7 +88,10 @@ const TabsState = ({ children }) => {
   };
 
   const updateGlobalBadges = () => {
-    fetch("https://badges.twitch.tv/v1/badges/global/display")
+    const encodedUri = encodeURI(
+      "https://badges.twitch.tv/v1/badges/global/display"
+    );
+    fetch(encodedUri)
       .then((res) => res.json())
       .then((res) => {
         const badges = res?.badge_sets;
@@ -98,14 +107,20 @@ const TabsState = ({ children }) => {
     if (tab !== undefined) {
       // BTTV Channel
       let bttv = {};
-      fetch(`https://api.betterttv.net/3/cached/users/twitch/${channelId}`)
+      const encodedUri = encodeURI(
+        `https://api.betterttv.net/3/cached/users/twitch/${channelId}`
+      );
+      fetch(encodedUri)
         .then((res) => res.json())
         .then((res) => {
           bttv = res;
 
           // FFZ Channel
           let ffz = {};
-          fetch(`https://api.frankerfacez.com/v1/room/id/${channelId}`)
+          const encodedUri = encodeURI(
+            `https://api.frankerfacez.com/v1/room/id/${channelId}`
+          );
+          fetch(encodedUri)
             .then((res) => res.json())
             .then((res) => {
               if (res.sets && Object.keys(res.sets).length > 0) {
@@ -123,9 +138,10 @@ const TabsState = ({ children }) => {
   const updateTabBadges = (channelId, tabId) => {
     const tab = state.tabs.find((tab) => tab.id === tabId);
     if (tab !== undefined) {
-      fetch(
+      const encodedUri = encodeURI(
         "https://badges.twitch.tv/v1/badges/channels/" + channelId + "/display"
-      )
+      );
+      fetch(encodedUri)
         .then((res) => res.json())
         .then((res) => {
           const badges = res?.badge_sets?.subscriber?.versions;
