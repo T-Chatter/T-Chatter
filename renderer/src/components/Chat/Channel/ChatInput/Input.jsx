@@ -120,7 +120,9 @@ const Input = ({
       return (
         <span
           className="emote-menu-emote"
+          data-code={code}
           onClick={(e) => insertEmote(e, code)}
+          title={code}
         >
           <img src={`https://cdn.betterttv.net/emote/${id}/1x`} alt={code} />
         </span>
@@ -129,7 +131,9 @@ const Input = ({
       return (
         <span
           className="emote-menu-emote"
+          data-code={code}
           onClick={(e) => insertEmote(e, code)}
+          title={code}
         >
           <img src={`https://cdn.frankerfacez.com/emote/${id}/1`} alt={code} />
         </span>
@@ -138,6 +142,18 @@ const Input = ({
   };
 
   const EmoteMenu = () => {
+    const filterEmotes = (e) => {
+      const query = e.target.value;
+      const emotes = document.querySelectorAll(".emote-menu-emote");
+      emotes.forEach((e) => {
+        if (e.dataset.code.toLowerCase().includes(query.toLowerCase())) {
+          e.classList.remove("hidden");
+        } else {
+          e.classList.add("hidden");
+        }
+      });
+    };
+
     return (
       <>
         <div id="emote-menu" style={{ display: isOpen ? "flex" : "none" }}>
@@ -170,6 +186,7 @@ const Input = ({
               className="emote-menu-search-input"
               placeholder="Seach emotes"
               type="text"
+              onChange={filterEmotes}
             />
           </div>
         </div>

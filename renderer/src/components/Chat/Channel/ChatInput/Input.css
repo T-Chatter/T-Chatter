@@ -48,6 +48,10 @@
     border-radius: 10%;
 }
 
+.emote-menu-emote.hidden {
+    display: none;
+}
+
 .emote-menu-emote:hover {
     background-color: #4e355c;
     cursor: pointer;

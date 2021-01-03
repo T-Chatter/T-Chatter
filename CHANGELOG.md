@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.13] - 2021-01-03
+
 - Added emote menu.
+- Added emote filtering.
 - Added connection status when connecting to chat.
 
 ## [0.3.12] - 2020-12-30
@@ -92,7 +95,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Release v0.1.0
 
-[unreleased]: https://github.com/T-Chatter/T-Chatter/compare/v0.3.11...dev
+[unreleased]: https://github.com/T-Chatter/T-Chatter/compare/v0.3.13...dev
+[0.3.13]: https://github.com/T-Chatter/T-Chatter/compare/v0.3.12...v0.3.13
 [0.3.12]: https://github.com/T-Chatter/T-Chatter/compare/v0.3.11...v0.3.12
 [0.3.11]: https://github.com/T-Chatter/T-Chatter/compare/v0.3.10...v0.3.11
 [0.3.10]: https://github.com/T-Chatter/T-Chatter/compare/v0.3.9...v0.3.10
