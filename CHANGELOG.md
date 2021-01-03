@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added emote menu.
 - Added emote filtering.
 - Added connection status when connecting to chat.
+- Fixed connection issues.
 
 ## [0.3.12] - 2020-12-30
 
