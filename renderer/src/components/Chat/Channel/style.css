@@ -96,18 +96,20 @@
 }
 
 .messages-chat-container .message-input {
+  box-sizing: border-box;
   display: block;
   background-color: #121013;
   color: #fff;
   width: 100%;
   overflow: auto;
   resize: none;
-  height: 20px;
+  height: 40px;
   min-height: 20px;
   max-height: 25vh;
   line-height: 20px;
   border: #a16bf5 solid 2px;
   padding: 0.5rem;
+  padding-right: 2.25rem;
   appearance: none;
   transition: all 250ms ease-out;
 }

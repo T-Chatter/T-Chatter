@@ -90,7 +90,7 @@ const Home = () => {
           Add
         </button>
         <br />
-        {optionsContext?.options?.chat?.browserSync ? (
+        {/* {optionsContext?.options?.chat?.browserSync ? (
           <button className="home-form-submit" onClick={addSync}>
             Sync Tab
             <span
@@ -100,7 +100,7 @@ const Home = () => {
               <i className="fas fa-question-circle"></i>
             </span>
           </button>
-        ) : null}
+        ) : null} */}
       </div>
       <div>
         <Follows addTab={addWithName} />

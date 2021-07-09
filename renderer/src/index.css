@@ -62,7 +62,7 @@ code {
   transform: translateY(-50%);
 
   left: 100%;
-  margin-left: 15px;
+  margin-left: 5px;
 
   width: 100px;
   padding: 10px;
@@ -75,6 +75,8 @@ code {
 
   opacity: 0;
   transition: 0.3s opacity;
+
+  pointer-events: none;
 }
 
 .tooltip.tooltip-left::before {
@@ -125,6 +127,12 @@ code {
 
   opacity: 0;
   transition: 0.3s;
+
+  pointer-events: none;
+}
+
+.tooltip.tooltip-right::after {
+  margin-left: -12px;
 }
 
 .tooltip.tooltip-bottom::after {

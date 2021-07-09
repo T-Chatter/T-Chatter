@@ -14,6 +14,7 @@ window.optionsSchema = {
     },
     general: {
       allwaysOnTop: false,
+      hideOffline: true,
     },
     auth: {
       token: "",

@@ -32,31 +32,44 @@ const AuthState = ({ children }) => {
       },
     })
       .then((res) => res.json())
-      .then((data) => {
+      .then(async (data) => {
         if (data.data !== null) {
           const user = data.data[0];
-          fetch(
-            "https://api.twitch.tv/helix/users/follows?from_id=" + user.id,
-            {
-              headers: {
-                Authorization: "Bearer " + token,
-                "Client-Id": CLIENT_ID,
-              },
-            }
-          )
-            .then((res) => res.json())
-            .then((res) => {
-              dispatch({
-                type: authActions.SET_AUTH_USER,
-                payload: {
-                  username: user.login,
-                  userId: user.id,
-                  token: token,
-                  follows: res.data,
+          let followedStreams = [];
+          let cursor = null;
+
+          const fetchFollows = async (crsr) => {
+            const res = await fetch(
+              `https://api.twitch.tv/helix/users/follows?from_id=${user.id}${
+                crsr ? "&after=" + crsr : ""
+              }`,
+              {
+                headers: {
+                  Authorization: "Bearer " + token,
+                  "Client-Id": CLIENT_ID,
                 },
-              });
-              setIsLoadingAuthUser(false);
-            });
+              }
+            );
+            const data = await res.json();
+            cursor = data.pagination.cursor ?? null;
+            return data.data;
+          };
+
+          do {
+            const streams = await fetchFollows(cursor);
+            followedStreams.push(...streams);
+          } while (cursor);
+
+          dispatch({
+            type: authActions.SET_AUTH_USER,
+            payload: {
+              username: user.login,
+              userId: user.id,
+              token: token,
+              follows: followedStreams,
+            },
+          });
+          setIsLoadingAuthUser(false);
         }
       })
       .catch((res) => {

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../../../contexts/Auth/auth.context";
 import { CLIENT_ID } from "../../../constants";
 import "./style.css";
+import { OptionsContext } from "../../../contexts/Options/options.context";
 
 function stringToBoolean(string) {
   switch (string.toLowerCase().trim()) {
@@ -20,6 +21,7 @@ function stringToBoolean(string) {
 
 const Follows = ({ addTab }) => {
   const authContext = useContext(AuthContext);
+  const optionsContext = useContext(OptionsContext);
   const [isLoadingFollows, setIsLoadingFollows] = useState(true);
   const [isNotLoggedIn, setIsNotLoggedIn] = useState(false);
   const [isNotFollowingAnyone, setIsNotFollowingAnyone] = useState(false);
@@ -58,7 +60,7 @@ const Follows = ({ addTab }) => {
             key={follow.to_name}
             name={follow.to_name}
             live="true"
-            viewer_count={follow.viewer_count}
+            viewer_count={views}
           >
             <button
               id={follow.to_name}
@@ -70,7 +72,7 @@ const Follows = ({ addTab }) => {
             {follow.to_name} ({views})
           </h4>
         );
-      else
+      else if (!optionsContext?.options?.general?.hideOffline)
         elements.push(
           <h4
             key={follow.to_name}
@@ -94,12 +96,16 @@ const Follows = ({ addTab }) => {
       .sort(
         (x, y) => stringToBoolean(x.props.live) - stringToBoolean(y.props.live)
       )
-      .reverse();
-    elements = elements.sort(
-      (x, y) => x.props.viewer_count > y.props.viewer_count
-    );
+      .reverse()
+      .sort((x, y) => (x.props.viewer_count > y.props.viewer_count ? -1 : 1));
+
     return elements;
-  }, [authContext, liveChannels, add]);
+  }, [
+    authContext,
+    liveChannels,
+    add,
+    optionsContext?.options?.general?.hideOffline,
+  ]);
 
   const fetchFollows = useCallback(() => {
     if (
@@ -182,9 +188,6 @@ const Follows = ({ addTab }) => {
           <i className="fas fa-sync-alt"></i>
         </button>
       </h1>
-      <small className="follows-wip">
-        <i>WIP. Will only shows a limited amout of followed channels...</i>
-      </small>
       <div className="follows-container">
         <div>{followedChannels}</div>
       </div>
