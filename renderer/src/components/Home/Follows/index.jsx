@@ -100,7 +100,12 @@ const Follows = ({ addTab }) => {
       .sort((x, y) => (x.props.viewer_count > y.props.viewer_count ? -1 : 1));
 
     return elements;
-  }, [authContext, liveChannels, add]);
+  }, [
+    authContext,
+    liveChannels,
+    add,
+    optionsContext?.options?.general?.hideOffline,
+  ]);
 
   const fetchFollows = useCallback(() => {
     if (
