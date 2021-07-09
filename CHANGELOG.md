@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 - Fixed emote menu button overlapping text.
+- Fixed followed channels - Will now show all followed channels.
+- Added option to hide offline channels.
+- Removed Sync tab - for now.
 
 ## [0.3.13] - 2021-01-03
 

@@ -30,6 +30,7 @@ const optionsDefaults = {
     },
     general: {
       alwaysOnTop: false,
+      hideOffline: true,
     },
     auth: {
       token: "",
@@ -65,6 +66,9 @@ const store = new Store({
     },
     "0.3.10": (store) => {
       store.set("options.chat.browserSync", false);
+    },
+    "0.3.14": (store) => {
+      store.set("options.general.hideOffline", true);
     },
   },
 });

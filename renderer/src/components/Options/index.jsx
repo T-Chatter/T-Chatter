@@ -15,6 +15,7 @@ const Options = () => {
   let browserSync = optionsContext.options?.chat?.browserSync;
   let smoothScroll = optionsContext.options?.chat?.smoothScroll;
   let alwaysOnTop = optionsContext.options?.general?.alwaysOnTop;
+  let hideOffline = optionsContext.options?.general?.hideOffline;
 
   const [isNotValid, setIsNotValid] = useState(false);
   const [messageLimitError, setMessageLimitError] = useState("");
@@ -39,6 +40,9 @@ const Options = () => {
           break;
         case "alwaysOnTop":
           alwaysOnTop = checked;
+          break;
+        case "hideOffline":
+          hideOffline = checked;
           break;
         case "browserSync":
           browserSync = checked;
@@ -69,12 +73,20 @@ const Options = () => {
     document.getElementById("clearTabs").checked = clearTabs;
     document.getElementById("smoothScroll").checked = smoothScroll;
     document.getElementById("alwaysOnTop").checked = alwaysOnTop;
+    document.getElementById("hideOffline").checked = hideOffline;
     document.getElementById("messageLimit").value = messageLimit;
-    document.getElementById("browserSync").value = browserSync;
+    // document.getElementById("browserSync").value = browserSync;
     window.ipcRenderer
       .invoke("getAppVersion")
       .then((res) => setAppVersion(res));
-  }, [clearTabs, messageLimit, smoothScroll, alwaysOnTop, browserSync]);
+  }, [
+    clearTabs,
+    messageLimit,
+    smoothScroll,
+    alwaysOnTop,
+    browserSync,
+    hideOffline,
+  ]);
 
   const saveOptions = (e) => {
     e.target.animate(
@@ -105,6 +117,7 @@ const Options = () => {
     );
     window.ipcRenderer.send("updateOption", "chat.smoothScroll", smoothScroll);
     window.ipcRenderer.send("updateOption", "general.alwaysOnTop", alwaysOnTop);
+    window.ipcRenderer.send("updateOption", "general.hideOffline", hideOffline);
     window.ipcRenderer.send("updateOption", "chat.browserSync", browserSync);
     optionsContext.update();
   };
@@ -144,6 +157,20 @@ const Options = () => {
                 id="alwaysOnTop"
                 onChange={onChange}
                 defaultChecked={alwaysOnTop}
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
+        </div>
+        <div className="options-input-container">
+          <h4 className="options-input-title w-1/2">Hide offline channels</h4>
+          <div className="w-1/2 option-input">
+            <label className="switch">
+              <input
+                type="checkbox"
+                id="hideOffline"
+                onChange={onChange}
+                defaultChecked={hideOffline}
               />
               <span className="slider round"></span>
             </label>
@@ -224,7 +251,7 @@ const Options = () => {
             </label>
           </div>
         </div>
-        <div className="options-input-container">
+        {/* <div className="options-input-container">
           <h4 className="options-input-title w-1/2">
             Browser Sync
             <span
@@ -245,7 +272,7 @@ const Options = () => {
               <span className="slider round"></span>
             </label>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Tab options */}
