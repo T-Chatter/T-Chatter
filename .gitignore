@@ -28,3 +28,4 @@ yarn-error.log*
 
 electron-builder.yaml
 .env
+.vs
